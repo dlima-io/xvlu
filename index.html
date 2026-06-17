@@ -2065,8 +2065,8 @@
         IS_MOBILE ? 2.0  : 0.5
       );
 
-      let discoBall = null;
-      let discoWire = null;
+      let discoBall  = null;
+      let discoWire  = null;
       const discoSpots = [];
 
       try {
@@ -2074,68 +2074,130 @@
         const DISCO_SEG_H = IS_MOBILE ? 14 : 18;
         const discoGeo    = new THREE.SphereGeometry(BALL_R, DISCO_SEG_W, DISCO_SEG_H);
 
-        // MeshMatCapMaterial + flatShading: la textura matcap tiene fondo oscuro
-        // con puntos de luz brillantes (blancos, azules, rosas).
-        // Con flatShading cada faceta usa el mismo normal plano → muestrea un
-        // punto solido del matcap. Al girar, las facetas cambian de angulo en
-        // espacio de vista → samplea distintos colores → efecto mosaico espejo.
+        // Matcap 512px: fondo casi negro + focos muy nítidos.
+        // Caída rápida (sharp falloff) = espejo real: o refleja el foco (brillante) o no (oscuro).
         function buildMatcap() {
-          const S = 256, h = S / 2;
+          const S = 512, h = S / 2;
           const cv = document.createElement('canvas');
           cv.width = cv.height = S;
           const c = cv.getContext('2d');
           if (!c) return null;
 
-          // Fondo casi negro — la mayoria de los tiles refleja el techo oscuro
-          c.fillStyle = '#040408';
+          // Fondo base: azul-negro muy oscuro (no negro puro)
+          // Los tiles "oscuros" son espejos que reflejan el techo de la sala — no el vacío
+          c.fillStyle = '#05050e';
           c.fillRect(0, 0, S, S);
 
-          // Mascara circular
           c.save();
           c.beginPath();
           c.arc(h, h, h, 0, Math.PI * 2);
           c.clip();
 
-          // Plata ambiental muy sutil en el hemisferio superior
-          // para que no quede 100% negro y se lea la forma esferica
-          const amb = c.createLinearGradient(0, 0, 0, S);
-          amb.addColorStop(0.0,  'rgba(80,82,110,0.55)');
-          amb.addColorStop(0.45, 'rgba(35,36,55,0.30)');
-          amb.addColorStop(1.0,  'rgba(10,10,18,0.00)');
-          c.fillStyle = amb;
+          // Ambiente de sala oscura: lo que reflejan los tiles que NO apuntan a un foco directo.
+          // Arriba = techo oscuro azul-gris / abajo = piso levemente más cálido
+          const roomAmbient = c.createLinearGradient(0, S * 0.05, 0, S * 0.95);
+          roomAmbient.addColorStop(0.00, 'rgba(55,62,105,0.95)');  // techo: azul plata
+          roomAmbient.addColorStop(0.30, 'rgba(38,42,80,0.80)');   // paredes altas
+          roomAmbient.addColorStop(0.65, 'rgba(30,28,62,0.65)');   // paredes bajas
+          roomAmbient.addColorStop(1.00, 'rgba(42,34,58,0.60)');   // piso cálido
+          c.fillStyle = roomAmbient;
           c.fillRect(0, 0, S, S);
 
-          // Focos de luz reflejados — nítidos, con caída rápida (como un espejo real)
-          // El truco: radio pequeño + alfa 1.0 en el centro → tiles que "pasan"
-          // por ese ángulo se iluminan de golpe, igual que una disco ball real.
+          // Wash azul-acero desde la izquierda (luz fría de sala)
+          const wBlue = c.createRadialGradient(S*0.08, S*0.42, 0, S*0.08, S*0.42, S*0.82);
+          wBlue.addColorStop(0.0, 'rgba(55,105,225,0.32)');
+          wBlue.addColorStop(0.45, 'rgba(38,75,185,0.14)');
+          wBlue.addColorStop(1.0, 'rgba(15,40,130,0.00)');
+          c.fillStyle = wBlue;
+          c.fillRect(0, 0, S, S);
+
+          // Wash plata-fría desde la derecha (luz blanca lateral rebotando)
+          const wSilver = c.createRadialGradient(S*0.92, S*0.46, 0, S*0.92, S*0.46, S*0.70);
+          wSilver.addColorStop(0.0, 'rgba(180,190,220,0.22)');
+          wSilver.addColorStop(0.45, 'rgba(140,155,190,0.09)');
+          wSilver.addColorStop(1.0, 'rgba(90,100,140,0.00)');
+          c.fillStyle = wSilver;
+          c.fillRect(0, 0, S, S);
+
+          // Ámbar cálido desde abajo-centro (rebote del piso iluminado)
+          const wAmber = c.createRadialGradient(S*0.52, S*0.95, 0, S*0.52, S*0.95, S*0.58);
+          wAmber.addColorStop(0.0, 'rgba(215,155,45,0.20)');
+          wAmber.addColorStop(0.5, 'rgba(170,110,28,0.07)');
+          wAmber.addColorStop(1.0, 'rgba(100,65,10,0.00)');
+          c.fillStyle = wAmber;
+          c.fillRect(0, 0, S, S);
+
+          // Brillo cenital general — como si hubiera un foco blanco amplio desde arriba
+          // que ilumina toda la sala y se refleja en los tiles con distintas intensidades
+          const wCeiling = c.createRadialGradient(S*0.55, S*0.0, 0, S*0.55, S*0.0, S*0.90);
+          wCeiling.addColorStop(0.0, 'rgba(225,232,255,0.50)');
+          wCeiling.addColorStop(0.4, 'rgba(175,188,220,0.22)');
+          wCeiling.addColorStop(1.0, 'rgba(90,105,150,0.00)');
+          c.fillStyle = wCeiling;
+          c.fillRect(0, 0, S, S);
+
+          // Focos de luz reflejados con look fotográfico realista:
+          // cada fuente tiene NUCLEO BLANCO SOLIDO (sobreexpuesto, como en foto)
+          // + HALO con el color de la luz alrededor.
+          // Así se ve una fuente de luz en un espejo real — no una mancha de color.
           const spots = [
-            { x: 0.62, y: 0.24, r: 0.13, rgb: '255,255,255'  },  // blanco cenital brillante
-            { x: 0.36, y: 0.29, r: 0.08, rgb: '180,210,255'  },  // azul frío izquierda
-            { x: 0.76, y: 0.55, r: 0.07, rgb: '255,170,210'  },  // rosa derecha
-            { x: 0.25, y: 0.65, r: 0.07, rgb: '150,255,210'  },  // menta inferior-izq
-            { x: 0.66, y: 0.72, r: 0.06, rgb: '255,220,150'  },  // dorado cálido inferior
-            { x: 0.50, y: 0.14, r: 0.06, rgb: '200,195,255'  },  // lavanda superior
-            { x: 0.84, y: 0.36, r: 0.05, rgb: '255,255,195'  },  // amarillo lateral
-            { x: 0.18, y: 0.42, r: 0.05, rgb: '175,230,255'  },  // cian izquierda
-            { x: 0.55, y: 0.82, r: 0.05, rgb: '255,200,180'  },  // naranja suave bajo
+            // Spotlight principal blanco (cenital, el más dominante)
+            { x:0.62, y:0.21, cr:0.026, hr:0.080, rgb:'255,255,255' },
+            { x:0.50, y:0.14, cr:0.016, hr:0.050, rgb:'245,250,255' },
+            { x:0.76, y:0.29, cr:0.014, hr:0.044, rgb:'255,255,255' },
+            { x:0.88, y:0.20, cr:0.011, hr:0.034, rgb:'255,255,255' },
+            { x:0.70, y:0.10, cr:0.010, hr:0.032, rgb:'248,252,255' },
+            { x:0.45, y:0.06, cr:0.009, hr:0.028, rgb:'255,255,255' },
+            { x:0.35, y:0.18, cr:0.009, hr:0.028, rgb:'235,242,255' },
+            { x:0.82, y:0.12, cr:0.008, hr:0.025, rgb:'255,255,255' },
+            // Luz azul-acero (fría, lateral)
+            { x:0.24, y:0.20, cr:0.020, hr:0.062, rgb:'120,175,255' },
+            { x:0.14, y:0.38, cr:0.013, hr:0.040, rgb:'110,168,255' },
+            { x:0.08, y:0.58, cr:0.011, hr:0.034, rgb:'100,160,255' },
+            { x:0.20, y:0.72, cr:0.010, hr:0.030, rgb:'115,170,255' },
+            { x:0.32, y:0.84, cr:0.008, hr:0.025, rgb:'130,180,255' },
+            // Luz blanca lateral derecha (reflejo de pared)
+            { x:0.90, y:0.42, cr:0.014, hr:0.044, rgb:'220,228,255' },
+            { x:0.86, y:0.60, cr:0.010, hr:0.032, rgb:'210,220,255' },
+            { x:0.78, y:0.75, cr:0.009, hr:0.028, rgb:'225,232,255' },
+            // Luz ámbar/dorada (cálida, desde abajo)
+            { x:0.62, y:0.77, cr:0.015, hr:0.046, rgb:'255,205,90'  },
+            { x:0.50, y:0.86, cr:0.010, hr:0.032, rgb:'255,212,105' },
+            { x:0.38, y:0.78, cr:0.010, hr:0.030, rgb:'255,200,80'  },
+            { x:0.74, y:0.86, cr:0.008, hr:0.025, rgb:'255,210,100' },
+            // Luz teal/cian (acento frío complementario)
+            { x:0.26, y:0.62, cr:0.012, hr:0.036, rgb:'80,235,195'  },
+            { x:0.16, y:0.76, cr:0.009, hr:0.028, rgb:'90,240,200'  },
+            // Blancos adicionales dispersos
+            { x:0.42, y:0.34, cr:0.010, hr:0.032, rgb:'230,238,255' },
+            { x:0.58, y:0.90, cr:0.008, hr:0.025, rgb:'255,255,255' },
+            { x:0.92, y:0.54, cr:0.008, hr:0.024, rgb:'240,246,255' },
           ];
 
           for (const s of spots) {
-            const sx = s.x * S, sy = s.y * S, sr = s.r * S;
-            const g = c.createRadialGradient(sx, sy, 0, sx, sy, sr);
-            // Caída rápida = reflejo nítido tipo espejo (no difuso)
+            const sx = s.x * S, sy = s.y * S;
+            const cr = s.cr * S, hr = s.hr * S;
+            // 1. Núcleo sólido blanco puro (círculo relleno, sin gradiente)
+            //    Simula la sobreexposición en el centro de la reflexión
+            c.fillStyle = 'rgba(255,255,255,1.0)';
+            c.beginPath();
+            c.arc(sx, sy, cr, 0, Math.PI * 2);
+            c.fill();
+            // 2. Halo coloreado alrededor del núcleo
+            //    Gradiente desde el borde del core hacia afuera
+            const g = c.createRadialGradient(sx, sy, cr * 0.4, sx, sy, hr);
             g.addColorStop(0.00, `rgba(${s.rgb},1.00)`);
-            g.addColorStop(0.30, `rgba(${s.rgb},0.80)`);
-            g.addColorStop(0.65, `rgba(${s.rgb},0.15)`);
+            g.addColorStop(0.25, `rgba(${s.rgb},0.88)`);
+            g.addColorStop(0.55, `rgba(${s.rgb},0.30)`);
             g.addColorStop(1.00, `rgba(${s.rgb},0.00)`);
             c.fillStyle = g;
             c.fillRect(0, 0, S, S);
           }
 
-          // Borde de la esfera: highlight muy sutil en el limbo para dar volumen
-          const rim = c.createRadialGradient(h, h, h * 0.72, h, h, h);
-          rim.addColorStop(0.0, 'rgba(60,62,88,0.00)');
-          rim.addColorStop(1.0, 'rgba(100,105,145,0.35)');
+          // Rim highlight sutil
+          const rim = c.createRadialGradient(h, h, h * 0.74, h, h, h * 0.98);
+          rim.addColorStop(0.0, 'rgba(50,52,80,0.00)');
+          rim.addColorStop(1.0, 'rgba(120,124,165,0.40)');
           c.fillStyle = rim;
           c.fillRect(0, 0, S, S);
 
@@ -2143,14 +2205,21 @@
           return new THREE.CanvasTexture(cv);
         }
 
-        const matcapTex = buildMatcap();
-        const discoMat  = matcapTex
-          ? new THREE.MeshMatcapMaterial({ matcap: matcapTex, flatShading: true })
-          : new THREE.MeshStandardMaterial({ color: 0xe8e8f2, metalness: 1.0, roughness: 0.05, flatShading: true });
+        const discoMat = new THREE.MeshMatcapMaterial({
+          matcap:      buildMatcap() || undefined,
+          flatShading: true,
+        });
 
         discoBall = new THREE.Mesh(discoGeo, discoMat);
         discoBall.position.copy(BALL_POS);
         scene.add(discoBall);
+
+        // Juntas entre tiles: EdgesGeometry muy oscuro para simular
+        // las separaciones entre los espejos de una disco ball real
+        const edgesGeo = new THREE.EdgesGeometry(discoGeo);
+        const edgesMat = new THREE.LineBasicMaterial({ color: 0x111118, transparent: true, opacity: 0.55 });
+        const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
+        discoBall.add(edgesMesh); // hijo de discoBall → gira junto con ella
 
         // Hilo de suspension
         const discoWireGeo = new THREE.CylinderGeometry(0.007, 0.007, 1.0, 5);
@@ -2368,8 +2437,6 @@
       ============================================================ */
       const clock = new THREE.Clock();
       let frameCount = 0;
-      // Throttle del cubeCamera: actualiza cada N frames para no matar el rendimiento
-      const CUBE_CAM_INTERVAL = 4;
 
       function animate() {
         requestAnimationFrame(animate);
