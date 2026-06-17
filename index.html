@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Lourdes - Quinceañera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600&family=Meow+Script&family=Raleway:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&display=swap" rel="stylesheet" />
+
+  <!--
+  ============================================================
+  FONDO GLITTER PLATEADO - VARIABLES DE PERSONALIZACION
+  ============================================================
+  Busca el bloque "CONFIG" en el JS para ajustar:
+    - PARTICLE_COUNT_DESKTOP / MOBILE : cantidad de particulas
+    - FALL_SPEED                       : velocidad de caida
+    - ROTATION_SPEED                   : velocidad de rotacion de particulas
+    - BLOOM_STRENGTH                   : intensidad del bloom
+    - LIGHT_COUNT                      : cantidad de luces dinamicas
+    - BOKEH_COUNT                      : cantidad de esferas de bokeh de fondo
+  ============================================================
+  -->
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #d0d0db;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Georgia', serif;
+    }
+
+    /* Canvas del fondo - z-index: 0 para estar SOBRE el background del body */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      display: block;
+    }
+
+    /*
+      Fallback para dispositivos sin WebGL:
+      Gradiente estatico plateado con animacion CSS pura.
+      Se activa con la clase .no-webgl en el body.
+    */
+    body.no-webgl {
+      background: radial-gradient(ellipse at 30% 20%, #2a2a3a 0%, #050508 50%, #0a0a12 100%);
+      animation: fallbackShimmer 4s ease-in-out infinite alternate;
+    }
+
+    body.no-webgl::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(192,192,192,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(200,200,220,0.05) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(176,196,222,0.04) 0%, transparent 45%);
+      animation: fallbackPulse 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes fallbackShimmer {
+      from { filter: brightness(1); }
+      to   { filter: brightness(1.15); }
+    }
+
+    @keyframes fallbackPulse {
+      from { opacity: 0.6; }
+      to   { opacity: 1; }
+    }
+
+    /* Reduccion de movimiento: respeta prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      body.no-webgl, body.no-webgl::before {
+        animation: none;
+      }
+    }
+
+    /*
+      Contenedor principal del contenido de la invitacion.
+      Coloca aqui el texto, imagenes y botones de la invitacion.
+      Se situa sobre el canvas con z-index positivo.
+    */
+    .invitation-content {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      pointer-events: none; /* permite click-through excepto en hijos con pointer-events: auto */
+    }
+
+    /*
+      Ejemplo de texto sobre el fondo (eliminar o reemplazar con el contenido real).
+      Contraste minimo WCAG AA garantizado sobre fondo oscuro.
+    */
+    .invitation-content .demo-hint {
+      color: rgba(220, 220, 230, 0.25);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-align: center;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+
+  <!-- ============================================================
+       ESTILOS DE LA INVITACION — QUINCEAÑERA LUCIANA
+  ============================================================ -->
+  <style>
+    :root {
+      --white:               #ffffff;
+      --silver-light:        #f0f0f5;
+      --silver-mid:          #c8c8d8;
+      --silver-dark:         #c0c0cc;
+      --silver-accent:       #4a4a65;
+      --silver-bright:       #f4f4fa;
+      --glass-border-bright: rgba(255, 255, 255, 0.28);
+      --shadow-deep:         rgba(10, 10, 20, 0.18);
+      --shadow-glow:         rgba(200, 200, 230, 0.10);
+      /* Paleta de texto oscuro para fondo plateado claro */
+      --text-main:           #1a1a2e;
+      --text-mid:            #3a3a55;
+      --text-light:          #5a5a78;
+    }
+
+    /* ============================================================
+       SCROLL-SNAP: contenedor principal
+       position: absolute sobre body height:100% + overflow:hidden.
+       -webkit-overflow-scrolling:touch es critico en iOS Safari.
+    ============================================================ */
+    .invitation-content {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* resetear herencias del primer bloque */
+      padding: 0 !important;
+      margin: 0;
+      gap: 0;
+      min-height: unset !important;
+      justify-content: flex-start;
+      align-items: stretch;
+      /* scroll */
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;   /* critico iOS */
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+      /* sobre el canvas */
+      z-index: 10 !important;
+      /* pointer-events activos para recibir touch */
+      pointer-events: auto !important;
+    }
+
+    .invitation-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* ============================================================
+       PANTALLA BASE — cada seccion ocupa exactamente la ventana
+    ============================================================ */
+    .inv-screen {
+      position: relative;
+      width: 100%;
+      height: 100vh;        /* fallback navegadores sin dvh */
+      height: 100dvh;
+      min-height: 100dvh;
+      flex-shrink: 0;       /* el flexbox NO comprime las pantallas */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ============================================================
+       PANEL DE CRISTAL — fondo blanco translucido + blur fuerte
+       El texto es oscuro, el panel aclara el fondo plateado del canvas.
+    ============================================================ */
+    .inv-panel {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border: 1px solid rgba(255, 255, 255, 0.50);
+      border-radius: 20px;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.70) inset,
+        0 12px 40px rgba(10, 10, 30, 0.12),
+        0 4px 16px rgba(10, 10, 30, 0.08),
+        0 0 60px rgba(180, 180, 210, 0.10);
+      overflow: hidden;
+    }
+
+    /* Brillo especular en esquina superior */
+    .inv-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 60%; height: 45%;
+      background: radial-gradient(
+        ellipse at 15% 5%,
+        rgba(255,255,255,0.30) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .inv-panel > * { position: relative; z-index: 1; }
+
+    /* Fallback sin backdrop-filter */
+    @supports not (backdrop-filter: blur(1px)) {
+      .inv-panel {
+        background: rgba(255, 255, 255, 0.85);
+      }
+    }
+
+    /* ============================================================
+       SEPARADORES PLATEADOS
+    ============================================================ */
+    .inv-divider {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      padding: 0 2rem;
+      margin: 0.6rem 0;
+    }
+
+    .inv-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(90,90,120,0.15) 15%,
+        rgba(74,74,101,0.45) 50%,
+        rgba(90,90,120,0.15) 85%,
+        transparent 100%
+      );
+    }
+
+    .inv-divider-diamond {
+      width: 5px; height: 5px;
+      background: var(--text-mid);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+      box-shadow: 0 0 5px rgba(58,58,85,0.40);
+    }
+
+    .inv-divider-diamond-sm {
+      width: 3px; height: 3px;
+      background: rgba(90,90,120,0.55);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       DESTELLOS SVG DECORATIVOS
+    ============================================================ */
+    .inv-sparkle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      animation: sparkleAnim 3s ease-in-out infinite;
+    }
+
+    @keyframes sparkleAnim {
+      0%, 100% { opacity: 0;    transform: scale(0.25) rotate(0deg);   }
+      15%       { opacity: 0;    transform: scale(0.25) rotate(0deg);   }
+      42%       { opacity: 0.90; transform: scale(1.00) rotate(18deg);  }
+      62%       { opacity: 0.70; transform: scale(0.80) rotate(-6deg);  }
+      85%       { opacity: 0;    transform: scale(0.20) rotate(8deg);   }
+    }
+
+    /* ============================================================
+       INDICADOR DE SCROLL — aparece en pantalla 1
+    ============================================================ */
+    .inv-scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0;
+      animation: hintFadeIn 1s ease forwards 2.4s;
+    }
+
+    .inv-scroll-hint span {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 400;
+      font-size: 0.60rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(58,58,85,0.60);
+    }
+
+    .inv-scroll-hint svg {
+      animation: hintBounce 2s ease-in-out infinite 3s;
+    }
+
+    @keyframes hintFadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes hintBounce {
+      0%, 100% { transform: translateY(0);   }
+      50%       { transform: translateY(5px); }
+    }
+
+    /* ============================================================
+       INDICADOR DE PANTALLAS — puntos de navegacion
+    ============================================================ */
+    .inv-dots {
+      position: fixed;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .inv-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(58,58,85,0.25);
+      border: 1px solid rgba(58,58,85,0.30);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .inv-dot.active {
+      background: rgba(26,26,46,0.75);
+      transform: scale(1.4);
+      box-shadow: 0 0 6px rgba(26,26,46,0.30);
+    }
+
+    /* ============================================================
+       PANTALLA 1 — APERTURA
+    ============================================================ */
+    .inv-screen-1 .inv-panel {
+      padding: 3.5rem 2rem 3rem;
+      gap: 0;
+    }
+
+    .inv-prename {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    /* Nombre: texto oscuro con franja de luz que barre de izquierda a derecha */
+    .inv-name {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: clamp(2.8rem, 11vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: 0.18em;
+      text-align: center;
+      background: linear-gradient(
+        105deg,
+        #1a1a2e 0%,
+        #1a1a2e 15%,
+        #2a2a42 32%,
+        #8888aa 46%,
+        #ffffff 50%,
+        #8888aa 54%,
+        #2a2a42 68%,
+        #1a1a2e 85%,
+        #1a1a2e 100%
+      );
+      background-size: 300% 100%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: metalSweep 5s linear infinite;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+      will-change: background-position;
+    }
+
+    /* Con background-size:300%, posición 0% muestra el primer 33% del gradiente (oscuro)
+       y posición 100% muestra el último 33% (también oscuro). El salto del loop es invisible. */
+    @keyframes metalSweep {
+      from { background-position: 100% center; }
+      to   { background-position: 0% center; }
+    }
+
+    .inv-subtitle-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.18rem;
+    }
+
+    /* "mis XV años" en una sola línea, centrados verticalmente respecto al XV */
+    .inv-xv-line {
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+
+    .inv-sus {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    /* XV: mismo efecto de barrido metálico, delay para desfasar de Lourdes */
+    .inv-age {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: clamp(3.8rem, 16vw, 5rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      background: linear-gradient(
+        105deg,
+        #1a1a2e 0%,
+        #1a1a2e 15%,
+        #2a2a42 32%,
+        #9999bb 46%,
+        #ffffff 50%,
+        #9999bb 54%,
+        #2a2a42 68%,
+        #1a1a2e 85%,
+        #1a1a2e 100%
+      );
+      background-size: 300% 100%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: metalSweep 5s linear infinite;
+      animation-delay: -2s; /* desfase sin pausa inicial */
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+    }
+
+    .inv-anos {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    /* ============================================================
+       PANTALLA 2 — DETALLES DEL EVENTO
+    ============================================================ */
+    .inv-screen-2 .inv-panel {
+      padding: 2.5rem 2rem 2.5rem;
+      gap: 0;
+    }
+
+    .inv-screen-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-align: center;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      margin-bottom: 1.8rem;
+    }
+
+    .inv-event-grid {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+    }
+
+    .inv-event-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      text-align: center;
+    }
+
+    /* Icono SVG minimalista — tono oscuro sobre panel claro */
+    .inv-event-icon {
+      width: 28px; height: 28px;
+      margin-bottom: 0.2rem;
+      opacity: 0.65;
+      filter: drop-shadow(0 1px 1px rgba(255,255,255,0.50));
+    }
+
+    .inv-event-label {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 500;
+      font-size: 0.65rem;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    .inv-event-value {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: clamp(0.95rem, 3.8vw, 1.18rem);
+      color: var(--text-main);
+      letter-spacing: 0.05em;
+      line-height: 1.45;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.80), 0 0 20px rgba(255,255,255,0.30);
+    }
+
+    .inv-event-value em {
+      font-family: 'Raleway', sans-serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 0.9em;
+      color: var(--text-mid);
+    }
+
+    /* Fila hora + dresscode */
+    .inv-event-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      align-items: center;
+    }
+
+    .inv-event-row .inv-event-item { padding: 0 0.5rem; }
+
+    .inv-event-row-sep {
+      width: 1px;
+      height: 3rem;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(74,74,101,0.30) 25%,
+        rgba(74,74,101,0.30) 75%,
+        transparent
+      );
+    }
+
+    /* ============================================================
+       PANTALLA 3 — MENSAJE
+    ============================================================ */
+    .inv-screen-3 .inv-panel {
+      padding: 3rem 2rem 3rem;
+    }
+
+    .inv-message-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-align: center;
+      margin-bottom: 1.6rem;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    .inv-message {
+      position: relative;
+      padding: 1.75rem 1.25rem;
+      background: rgba(255,255,255,0.20);
+      border: 1px solid rgba(74,74,101,0.15);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    /* Comillas decorativas oscuras */
+    .inv-message::before,
+    .inv-message::after {
+      position: absolute;
+      font-family: 'Cinzel', serif;
+      font-size: 5rem;
+      line-height: 1;
+      color: rgba(58,58,85,0.14);
+      pointer-events: none;
+    }
+    .inv-message::before { content: '\201C'; top: -0.6rem;  left:  0.4rem; }
+    .inv-message::after  { content: '\201D'; bottom: -2.2rem; right: 0.4rem; }
+
+    .inv-message p {
+      font-family: 'Raleway', sans-serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(0.90rem, 3.6vw, 1.05rem);
+      line-height: 1.85;
+      color: var(--text-mid);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      letter-spacing: 0.02em;
+    }
+
+    .inv-firma {
+      font-family: 'Cinzel', serif;
+      font-weight: 500;
+      font-size: clamp(0.80rem, 3.2vw, 0.95rem);
+      letter-spacing: 0.20em;
+      color: var(--text-main);
+      text-align: center;
+      margin-top: 1.75rem;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+    }
+
+    /* ============================================================
+       PANTALLA 4 — RSVP
+    ============================================================ */
+    .inv-screen-4 .inv-panel {
+      padding: 3rem 2rem 3rem;
+      gap: 0;
+    }
+
+    .inv-rsvp-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-align: center;
+      margin-bottom: 1.6rem;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    .inv-rsvp-text {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 400;
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      letter-spacing: 0.04em;
+      line-height: 1.7;
+      text-align: center;
+      color: var(--text-mid);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      margin-bottom: 1.75rem;
+    }
+
+    .inv-rsvp-deadline {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: 0.78em;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      margin-top: 0.35rem;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    /* Boton RSVP — plateado puro, sin dorado */
+    .inv-rsvp-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.92rem 2.5rem;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 500;
+      font-size: 0.68rem;
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #12121e;
+      background: linear-gradient(
+        135deg,
+        #c0c0cc 0%,
+        #e0e0ee 22%,
+        #f8f8ff 40%,
+        #ffffff 50%,
+        #e8e8f4 62%,
+        #c8c8dc 80%,
+        #b8b8cc 100%
+      );
+      background-size: 220% auto;
+      border: none;
+      border-radius: 1px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background-position 0.45s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow:
+        0 4px 22px rgba(180,180,210,0.40),
+        0 1px 0 rgba(255,255,255,0.55) inset,
+        0 -1px 0 rgba(0,0,0,0.15) inset;
+      will-change: transform;
+      margin-bottom: 0.25rem;
+    }
+
+    .inv-rsvp-btn:hover {
+      background-position: right center;
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 32px rgba(200,200,230,0.55),
+        0 1px 0 rgba(255,255,255,0.65) inset,
+        0 -1px 0 rgba(0,0,0,0.15) inset;
+    }
+
+    .inv-rsvp-btn:active { transform: translateY(0); }
+
+    /* Shimmer plateado sobre el boton */
+    .inv-rsvp-btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.45) 50%,
+        transparent 100%
+      );
+      animation: btnShimmer 3.5s ease-in-out infinite;
+    }
+
+    @keyframes btnShimmer {
+      0%   { left: -100%; }
+      40%  { left:  100%; }
+      100% { left:  100%; }
+    }
+
+    /* Separador linea + contacto */
+    .inv-contact-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 1.6rem;
+    }
+
+    .inv-contact-label {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+    }
+
+    .inv-contact-number {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: clamp(0.85rem, 3.4vw, 1rem);
+      color: var(--text-mid);
+      letter-spacing: 0.10em;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+    }
+
+    /* ============================================================
+       ANIMACIONES DE ENTRADA — controladas por IntersectionObserver
+    ============================================================ */
+
+    /* Estado inicial: invisible */
+    .inv-reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .inv-reveal-scale {
+      opacity: 0;
+      transform: translateY(10px) scale(0.94);
+      transition: opacity 0.85s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    /* Estado visible: activado por JS con clase .is-visible */
+    .inv-reveal.is-visible,
+    .inv-reveal-scale.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Delays escalonados para los hijos */
+    .inv-reveal[data-delay="1"] { transition-delay: 0.10s; }
+    .inv-reveal[data-delay="2"] { transition-delay: 0.28s; }
+    .inv-reveal[data-delay="3"] { transition-delay: 0.46s; }
+    .inv-reveal[data-delay="4"] { transition-delay: 0.64s; }
+    .inv-reveal[data-delay="5"] { transition-delay: 0.82s; }
+    .inv-reveal[data-delay="6"] { transition-delay: 1.00s; }
+    .inv-reveal-scale[data-delay="1"] { transition-delay: 0.18s; }
+    .inv-reveal-scale[data-delay="2"] { transition-delay: 0.36s; }
+    .inv-reveal-scale[data-delay="3"] { transition-delay: 0.54s; }
+    .inv-reveal-scale[data-delay="4"] { transition-delay: 0.72s; }
+    .inv-reveal-scale[data-delay="5"] { transition-delay: 0.90s; }
+
+    /* ============================================================
+       CUENTA REGRESIVA
+    ============================================================ */
+    .inv-countdown {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.2rem 0.8rem;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 14px;
+      width: 100%;
+      margin-bottom: 0.4rem;
+    }
+
+    .inv-cd-header {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .inv-cd-units {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+      width: 100%;
+    }
+
+    .inv-countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      min-width: 2.8rem;
+    }
+
+    .inv-cd-num {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: clamp(1.4rem, 5.5vw, 1.8rem);
+      color: var(--text-main);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
+    .inv-cd-label {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 500;
+      font-size: 0.48rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .inv-cd-sep {
+      font-family: 'Cinzel', serif;
+      font-weight: 300;
+      font-size: 1.4rem;
+      color: var(--text-light);
+      line-height: 1;
+      margin-bottom: 0.8rem;
+      align-self: center;
+    }
+
+    /* ============================================================
+       BOTONES DE ACCIÓN (Maps + Calendar)
+    ============================================================ */
+    .inv-action-btns {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .inv-action-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      flex: 1;
+      padding: 0.7rem 0.8rem;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .inv-action-btn:active {
+      transform: scale(0.97);
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* ============================================================
+       RESPONSIVE DESKTOP
+    ============================================================ */
+    @media (min-width: 640px) {
+      .inv-panel { max-width: 500px; }
+      .inv-screen-1 .inv-panel { padding: 4rem 3rem 3.5rem; }
+      .inv-screen-2 .inv-panel { padding: 3rem 3rem 3rem; }
+      .inv-screen-3 .inv-panel { padding: 3.5rem 3rem 3.5rem; }
+      .inv-screen-4 .inv-panel { padding: 3.5rem 3rem 3.5rem; }
+      .inv-dots { right: 1.75rem; }
+    }
+
+    /* ============================================================
+       PREFERS-REDUCED-MOTION
+    ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      .inv-reveal, .inv-reveal-scale {
+        transition: none !important;
+        opacity: 1;
+        transform: none;
+      }
+      .inv-sparkle         { animation: none; opacity: 0.50; }
+      .inv-name, .inv-age  { animation: none; background-position: 0% center; }
+      .inv-rsvp-btn::after { animation: none; }
+      .inv-scroll-hint     { animation: none; opacity: 1; }
+      .inv-scroll-hint svg { animation: none; }
+    }
+  </style>
+
+  <style>
+    /* ============================================================
+       PANTALLA FOTOS — frase + carrusel apilado
+    ============================================================ */
+    .inv-panel-foto {
+      padding: 1.8rem 0.5rem 1.4rem;
+      gap: 0;
+    }
+
+    .inv-photo-phrase {
+      font-family: 'Raleway', sans-serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(0.88rem, 3.5vw, 1.02rem);
+      line-height: 1.65;
+      text-align: center;
+      color: var(--text-mid);
+      letter-spacing: 0.02em;
+      padding: 0 0.4rem;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      margin-bottom: 0.2rem;
+    }
+
+    /* Contenedor de la pila: altura fija para que las cartas inferiores asosmen */
+    .inv-card-stack {
+      position: relative;
+      width: 100%;
+      height: 375px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin: 0.8rem 0 0.4rem;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .inv-card {
+      position: absolute;
+      width: min(290px, 84vw);
+      aspect-ratio: 4 / 5;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%); /* base; JS agrega el resto */
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 36px rgba(10,10,20,0.22),
+        0 2px 8px   rgba(10,10,20,0.12),
+        0 0 0 1px   rgba(255,255,255,0.40) inset;
+      cursor: grab;
+      touch-action: none; /* JS maneja el drag en todas las direcciones */
+      will-change: transform, opacity;
+      background: rgba(190,190,210,0.28);
+    }
+
+    .inv-card:active { cursor: grabbing; }
+
+    .inv-card img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    /* Placeholder visible mientras la imagen no carga */
+    .inv-card-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      background: linear-gradient(
+        145deg,
+        rgba(215,215,228,0.60) 0%,
+        rgba(198,198,218,0.45) 100%
+      );
+    }
+
+    .inv-card-placeholder span {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: rgba(58,58,85,0.25);
+      letter-spacing: 0.1em;
+    }
+
+    .inv-card-placeholder small {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(58,58,85,0.38);
+    }
+
+    /* Contador "1 / 4" */
+    .inv-card-counter {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      color: rgba(58,58,85,0.45);
+      text-align: center;
+      margin-bottom: 0.1rem;
+    }
+
+    /* Pista de deslizar */
+    .inv-card-hint {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.56rem;
+      font-weight: 400;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(58,58,85,0.42);
+      margin-top: 0.3rem;
+    }
+
+    .inv-card-hint svg { flex-shrink: 0; color: rgba(58,58,85,0.50); }
+
+    @media (min-width: 640px) {
+      .inv-panel-foto  { padding: 2rem 1rem 1.8rem; }
+      .inv-card-stack  { height: 430px; }
+      .inv-card        { width: 310px; }
+    }
+  </style>
+
+  <!--
+    Three.js via importmap (no bundler necesario).
+    Version 0.169 - ultima estable con soporte completo de post-processing.
+  -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!--
+    .invitation-content es el contenedor donde va el contenido real de la invitacion.
+    Agrega aqui titulos, nombres, fecha, hora, lugar, RSVP, etc.
+  -->
+  <!-- Puntos de navegacion (indicador de pantalla activa) -->
+  <nav class="inv-dots" aria-label="Navegación de secciones" aria-hidden="true">
+    <div class="inv-dot active" data-screen="0"></div>
+    <div class="inv-dot"        data-screen="1"></div>
+    <div class="inv-dot"        data-screen="2"></div>
+    <div class="inv-dot"        data-screen="3"></div>
+    <div class="inv-dot"        data-screen="4"></div>
+  </nav>
+
+  <div class="invitation-content" id="inv-scroll-container">
+
+    <!-- ================================================================
+         PANTALLA 1 — APERTURA: nombre + "Sus 15 años"
+    ================================================================ -->
+    <section class="inv-screen inv-screen-1" data-screen="0" aria-label="Portada">
+
+      <!-- Destellos flotantes de la pantalla 1 -->
+      <svg class="inv-sparkle" style="top:7%;right:9%;width:24px;animation-delay:0s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spA)"/>
+        <path d="M20 7L21 19L33 20L21 21L20 33L19 21L7 20L19 19Z" fill="white" opacity="0.45"/>
+        <defs><radialGradient id="spA" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+      </svg>
+      <svg class="inv-sparkle" style="top:11%;left:8%;width:14px;animation-delay:0.9s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.80"/>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:14%;left:7%;width:16px;animation-delay:1.8s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 2L21.4 18.6L38 20L21.4 21.4L20 38L18.6 21.4L2 20L18.6 18.6Z" fill="url(#spB)"/>
+        <defs><radialGradient id="spB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#b0b0cc" stop-opacity="0"/></radialGradient></defs>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:10%;right:7%;width:11px;animation-delay:1.1s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.70"/>
+      </svg>
+
+      <div class="inv-panel">
+
+        <!-- Línea 1: "mis XV años" -->
+        <div class="inv-subtitle-block inv-reveal" data-delay="1">
+          <div class="inv-xv-line">
+            <span class="inv-sus">mis</span>
+            <span class="inv-age">XV</span>
+            <span class="inv-anos">años</span>
+          </div>
+        </div>
+
+        <div class="inv-divider inv-reveal" data-delay="2" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+
+        <!-- Línea 2: "Lourdes" -->
+        <h1 class="inv-name inv-reveal-scale" data-delay="3">Lourdes</h1>
+
+      </div>
+
+      <!-- Indicador de scroll -->
+      <div class="inv-scroll-hint" aria-hidden="true">
+        <span>deslizar</span>
+        <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
+          <path d="M7 1 L7 15 M3 11 L7 15 L11 11" stroke="rgba(192,192,210,0.50)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+    </section>
+
+    <!-- ================================================================
+         PANTALLA 2 — FOTOS
+    ================================================================ -->
+    <section class="inv-screen inv-screen-foto" data-screen="1" aria-label="Galería de fotos">
+
+      <svg class="inv-sparkle" style="top:9%;right:7%;width:17px;animation-delay:0.4s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75"/>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:11%;left:8%;width:13px;animation-delay:1.7s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spFoto)"/>
+        <defs><radialGradient id="spFoto" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+      </svg>
+
+      <div class="inv-panel inv-panel-foto">
+
+        <p class="inv-photo-phrase inv-reveal" data-delay="1">
+          "Cada foto guarda un pedacito<br>de quien sos hoy"
+        </p>
+
+        <div class="inv-divider inv-reveal" data-delay="2" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+
+        <!-- Carrusel apilado: deslizá izq/der para pasar fotos         -->
+        <!-- ⚠ Reemplazá foto1.jpg … foto4.jpg con tus archivos reales -->
+        <div class="inv-card-stack" id="inv-card-stack">
+          <!-- DOM de fondo a frente: data-card="3" primero, data-card="0" último (encima) -->
+          <div class="inv-card" data-card="3">
+            <div class="inv-card-placeholder"><span>4</span><small>foto</small></div>
+            <img src="foto4.jpg" alt="Foto 4" draggable="false">
+          </div>
+          <div class="inv-card" data-card="2">
+            <div class="inv-card-placeholder"><span>3</span><small>foto</small></div>
+            <img src="foto3.jpg" alt="Foto 3" draggable="false">
+          </div>
+          <div class="inv-card" data-card="1">
+            <div class="inv-card-placeholder"><span>2</span><small>foto</small></div>
+            <img src="foto2.jpg" alt="Foto 2" draggable="false">
+          </div>
+          <div class="inv-card" data-card="0">
+            <div class="inv-card-placeholder"><span>1</span><small>foto</small></div>
+            <img src="foto1.jpg" alt="Foto 1" draggable="false">
+          </div>
+        </div>
+
+        <p class="inv-card-counter" id="inv-card-counter">1 / 4</p>
+
+        <div class="inv-card-hint inv-reveal" data-delay="4">
+          <svg width="14" height="10" viewBox="0 0 20 14" fill="none" aria-hidden="true"><path d="M1 7H19M1 7L6 2M1 7L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>deslizá</span>
+          <svg width="14" height="10" viewBox="0 0 20 14" fill="none" aria-hidden="true"><path d="M19 7H1M19 7L14 2M19 7L14 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================================================================
+         PANTALLA 3 — DETALLES DEL EVENTO
+    ================================================================ -->
+    <section class="inv-screen inv-screen-2" data-screen="2" aria-label="Detalles del evento">
+
+      <svg class="inv-sparkle" style="top:8%;right:8%;width:16px;animation-delay:0.3s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75"/>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:12%;left:9%;width:19px;animation-delay:1.4s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spC)"/>
+        <defs><radialGradient id="spC" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+      </svg>
+
+      <div class="inv-panel">
+        <!-- Cuenta regresiva — arriba de todo -->
+        <div class="inv-countdown inv-reveal" data-delay="1">
+          <div class="inv-cd-header">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>Faltan</span>
+          </div>
+          <div class="inv-cd-units">
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-days">00</span><span class="inv-cd-label">días</span></div>
+            <div class="inv-cd-sep">:</div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-hours">00</span><span class="inv-cd-label">hs</span></div>
+            <div class="inv-cd-sep">:</div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-mins">00</span><span class="inv-cd-label">min</span></div>
+            <div class="inv-cd-sep">:</div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-secs">00</span><span class="inv-cd-label">seg</span></div>
+          </div>
+        </div>
+
+        <div class="inv-divider inv-reveal" data-delay="2" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+
+        <!-- <p class="inv-screen-title inv-reveal" data-delay="3">Nos encontramos</p> -->
+
+        <div class="inv-event-grid">
+
+          <!-- Fecha -->
+          <div class="inv-event-item inv-reveal" data-delay="2">
+            <!-- Icono calendario — SVG minimalista plateado -->
+            <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <rect x="3" y="5" width="22" height="20" rx="2" stroke="rgba(58,58,85,0.55)" stroke-width="1.2"/>
+              <path d="M3 10 H25" stroke="rgba(58,58,85,0.35)" stroke-width="1"/>
+              <rect x="9"  y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)"/>
+              <rect x="17" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)"/>
+              <text x="14" y="22" text-anchor="middle" font-family="Cinzel,serif" font-size="7" fill="rgba(26,26,46,0.70)" font-weight="400">15</text>
+            </svg>
+            <span class="inv-event-label">Fecha</span>
+            <span class="inv-event-value">Sábado 15 de agosto<br>de 2026</span>
+          </div>
+
+          <div class="inv-divider inv-reveal" data-delay="3" aria-hidden="true">
+            <div class="inv-divider-line"></div>
+            <div class="inv-divider-diamond-sm"></div>
+            <div class="inv-divider-diamond"></div>
+            <div class="inv-divider-diamond-sm"></div>
+            <div class="inv-divider-line"></div>
+          </div>
+
+
+
+
+
+          <!-- Hora + Dresscode -->
+          <div class="inv-event-row inv-reveal" data-delay="5">
+            <div class="inv-event-item">
+              <!-- Icono reloj -->
+              <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <circle cx="14" cy="14" r="10" stroke="rgba(58,58,85,0.55)" stroke-width="1.2"/>
+                <path d="M14 8 L14 14 L19 17" stroke="rgba(58,58,85,0.55)" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+              <span class="inv-event-label">Hora</span>
+              <span class="inv-event-value">21:00 hs</span>
+            </div>
+            <div class="inv-event-row-sep" aria-hidden="true"></div>
+            <div class="inv-event-item">
+              <!-- Icono vestimenta -->
+              <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path d="M10 3 L6 8 L10 9 L10 24 L18 24 L18 9 L22 8 L18 3 C18 3 16 5 14 5 C12 5 10 3 10 3Z" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+              </svg>
+              <span class="inv-event-label">Dresscode</span>
+              <span class="inv-event-value">Formal</span>
+            </div>
+          </div>
+
+          <div class="inv-divider inv-reveal" data-delay="4" aria-hidden="true">
+            <div class="inv-divider-line"></div>
+            <div class="inv-divider-diamond-sm"></div>
+            <div class="inv-divider-diamond"></div>
+            <div class="inv-divider-diamond-sm"></div>
+            <div class="inv-divider-line"></div>
+          </div>
+
+          <!-- Lugar -->
+          <div class="inv-event-item inv-reveal" data-delay="3">
+            <!-- Icono ubicacion -->
+            <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M14 3 C9.58 3 6 6.58 6 11 C6 16.5 14 25 14 25 C14 25 22 16.5 22 11 C22 6.58 18.42 3 14 3Z" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none"/>
+              <circle cx="14" cy="11" r="3" stroke="rgba(58,58,85,0.45)" stroke-width="1.1" fill="none"/>
+            </svg>
+            <span class="inv-event-label">Lugar</span>
+            <span class="inv-event-value">Las Valkirias<br><em>Av. José Ignacio de la Roza Oeste 1431 Rivadavia</em></span>
+          </div>
+
+        </div>
+
+        <!-- Cuenta regresiva -->
+        <!-- Botones de acción -->
+        <div class="inv-action-btns inv-reveal" data-delay="7">
+          <a class="inv-action-btn" id="btn-maps" href="#" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg>
+            Cómo llegar
+          </a>
+          <a class="inv-action-btn" id="btn-calendar" href="#" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.5"/><path d="M8 2v3M16 2v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 13h2v2H8z" fill="currentColor"/></svg>
+            Agendar
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================================================================
+         PANTALLA 3 — MENSAJE DE BIENVENIDA
+    ================================================================ -->
+    <section class="inv-screen inv-screen-3" data-screen="3" aria-label="Mensaje">
+
+      <svg class="inv-sparkle" style="top:9%;left:8%;width:20px;animation-delay:0.6s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spD)"/>
+        <defs><radialGradient id="spD" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#b8b8d0" stop-opacity="0"/></radialGradient></defs>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:11%;right:8%;width:13px;animation-delay:1.6s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.72"/>
+      </svg>
+
+      <div class="inv-panel">
+        <p class="inv-message-title inv-reveal" data-delay="1">Una noche especial</p>
+
+        <div class="inv-message inv-reveal" data-delay="2">
+          <p>
+            Es con el corazón lleno de alegría<br>
+            que te invitamos a compartir<br>
+            este momento tan especial.<br><br>
+            Tu presencia hará de esta noche<br>
+            un recuerdo que guardaremos<br>
+            para siempre.
+          </p>
+        </div>
+
+        <div class="inv-divider inv-reveal" data-delay="3" style="margin-top:1.6rem" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+
+        <p class="inv-firma inv-reveal" data-delay="4">Lourdes &amp; Familia</p>
+      </div>
+
+    </section>
+
+    <!-- ================================================================
+         PANTALLA 4 — RSVP
+    ================================================================ -->
+    <section class="inv-screen inv-screen-4" data-screen="4" aria-label="Confirmación de asistencia">
+
+      <svg class="inv-sparkle" style="top:8%;right:8%;width:22px;animation-delay:0.2s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spE)"/>
+        <path d="M20 7L21 19L33 20L21 21L20 33L19 21L7 20L19 19Z" fill="white" opacity="0.40"/>
+        <defs><radialGradient id="spE" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:13%;left:8%;width:15px;animation-delay:1.3s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.68"/>
+      </svg>
+
+      <div class="inv-panel">
+        <p class="inv-rsvp-title inv-reveal" data-delay="1">Confirmá tu asistencia</p>
+
+        <p class="inv-rsvp-text inv-reveal" data-delay="2">
+          Tu presencia es muy importante para nosotros.
+          <span class="inv-rsvp-deadline">Respondé antes del 1 de Noviembre de 2025</span>
+        </p>
+
+        <a
+          class="inv-rsvp-btn inv-reveal" data-delay="3"
+          href="https://wa.me/5491100000000?text=Hola!+Confirmo+mi+asistencia+a+la+quincea%C3%B1era+de+Lourdes"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="pointer-events:auto"
+          aria-label="Confirmar asistencia por WhatsApp"
+        >
+          Confirmar asistencia
+        </a>
+
+        <div class="inv-divider inv-reveal" data-delay="4" style="margin-top:1.4rem" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+
+        <div class="inv-contact-block inv-reveal" data-delay="5">
+          <span class="inv-contact-label">Consultas</span>
+          <span class="inv-contact-number">+54 9 11 0000-0000</span>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /.invitation-content -->
+
+  <!-- Cuenta regresiva + links Maps/Calendar -->
+  <script>
+    (function () {
+      // ── Fecha del evento: 15 de agosto de 2026 a las 21:00 ──
+      var EVENT_DATE = new Date('2026-08-15T21:00:00');
+
+      // ── Cuenta regresiva ──
+      function updateCountdown() {
+        var now  = new Date();
+        var diff = EVENT_DATE - now;
+        if (diff <= 0) {
+          document.getElementById('cd-days').textContent  = '00';
+          document.getElementById('cd-hours').textContent = '00';
+          document.getElementById('cd-mins').textContent  = '00';
+          document.getElementById('cd-secs').textContent  = '00';
+          return;
+        }
+        var days  = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var mins  = Math.floor((diff % 3600000)  / 60000);
+        var secs  = Math.floor((diff % 60000)    / 1000);
+        document.getElementById('cd-days').textContent  = String(days).padStart(2, '0');
+        document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('cd-mins').textContent  = String(mins).padStart(2, '0');
+        document.getElementById('cd-secs').textContent  = String(secs).padStart(2, '0');
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // ── Google Maps ──
+      // TODO: reemplazar con la URL correcta de Google Maps cuando la tengas
+      var mapsUrl = 'https://maps.google.com/?q=Las+Valkirias+Av.+José+Ignacio+de+la+Roza+Oeste+1431+Rivadavia';
+      document.getElementById('btn-maps').href = mapsUrl;
+
+      // ── Google Calendar ──
+      // "render?action=TEMPLATE" es el formato compatible con web Y app nativa Android/iOS
+      var calUrl = 'https://calendar.google.com/calendar/render?' + [
+        'action=TEMPLATE',
+        'text=XV%20Lourdes',
+        'dates=20260815T210000%2F20260816T020000',
+        'location=Las%20Valkirias%2C%20Av.%20Jos%C3%A9%20Ignacio%20de%20la%20Roza%20Oeste%201431%2C%20Rivadavia',
+      ].join('&');
+      document.getElementById('btn-calendar').href = calUrl;
+    })();
+  </script>
+
+  <!-- ── Carrusel apilado de fotos ── -->
+  <script>
+    (function () {
+      var stack   = document.getElementById('inv-card-stack');
+      var counter = document.getElementById('inv-card-counter');
+      if (!stack) return;
+
+      // Ordenar cartas por data-card (0 = primera, 3 = última)
+      var cards = Array.from(stack.querySelectorAll('.inv-card'))
+        .sort(function (a, b) { return +a.dataset.card - +b.dataset.card; });
+      var total = cards.length; // 4
+
+      // order[0] = índice de la carta en el tope del mazo
+      var order = [0, 1, 2, 3];
+
+      // ── Aspecto visual por posición en la pila ───────────────────────
+      // x offset lateral + rotaciones variadas → efecto de fotos tiradas al azar
+      var STATES = [
+        { scale: 1,     x:  0, y:  0, rotate:  0,   opacity: 1,    zIndex: 4 },
+        { scale: 0.940, x:  6, y:  9, rotate: -5.8, opacity: 1,    zIndex: 3 },
+        { scale: 0.884, x: -5, y: 18, rotate:  4.2, opacity: 0.95, zIndex: 2 },
+        { scale: 0.833, x:  4, y: 27, rotate: -7.8, opacity: 0.85, zIndex: 1 },
+      ];
+
+      function applyCard(card, s, animated) {
+        card.style.transition = animated
+          ? 'transform 0.40s cubic-bezier(0.34,1.4,0.64,1), opacity 0.30s ease'
+          : 'none';
+        card.style.transform = 'translateX(-50%) translateX(' + s.x + 'px) translateY(' + s.y + 'px) scale(' + s.scale + ') rotate(' + s.rotate + 'deg)';
+        card.style.opacity   = String(s.opacity);
+        card.style.zIndex    = String(s.zIndex);
+      }
+
+      function applyAll(animated) {
+        order.forEach(function (cardIdx, pos) {
+          applyCard(cards[cardIdx], STATES[pos], animated);
+        });
+      }
+
+      function updateCounter() {
+        if (counter) counter.textContent = (order[0] + 1) + ' / ' + total;
+      }
+
+      // ── Manda la carta del tope al fondo del mazo en la dirección del drag ──
+      function sendToBack(dx, dy) {
+        var topIdx = order[0];
+        var card   = cards[topIdx];
+
+        // Vuelo en la dirección exacta del gesto, normalizado a ~580px
+        var dist   = Math.sqrt(dx * dx + dy * dy) || 1;
+        var tx     = (dx / dist) * 580;
+        var ty     = (dy / dist) * 580;
+        var rot    = dx * 0.12; // rotación según componente horizontal
+        card.style.transition = 'transform 0.36s ease, opacity 0.20s ease';
+        card.style.transform  = 'translateX(-50%) translateX(' + tx + 'px) translateY(' + ty + 'px) scale(0.78) rotate(' + rot + 'deg)';
+        card.style.opacity    = '0';
+        card.style.zIndex     = '0';
+
+        // Rotar el mazo: la carta sale del tope y pasa al fondo
+        order.push(order.shift()); // [0,1,2,3] → [1,2,3,0]
+
+        // Las cartas restantes suben a sus nuevas posiciones
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            for (var pos = 0; pos < total - 1; pos++) {
+              applyCard(cards[order[pos]], STATES[pos], true);
+            }
+          });
+        });
+
+        // Después de la animación de salida, reposicionar la carta al fondo y reaparecer
+        setTimeout(function () {
+          var backCard = cards[order[total - 1]];
+          var s        = STATES[total - 1];
+          backCard.style.transition = 'none';
+          backCard.style.transform  = 'translateX(-50%) translateX(' + s.x + 'px) translateY(' + s.y + 'px) scale(' + s.scale + ') rotate(' + s.rotate + 'deg)';
+          backCard.style.zIndex     = String(s.zIndex);
+          backCard.style.opacity    = '0';
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              backCard.style.transition = 'opacity 0.32s ease';
+              backCard.style.opacity    = String(s.opacity);
+            });
+          });
+        }, 370);
+
+        updateCounter();
+      }
+
+      // ── Drag / Touch — cualquier dirección ───────────────────────────
+      var startX, startY, dragging, dirLocked;
+
+      function onStart(cx, cy) {
+        startX = cx; startY = cy;
+        dragging = true; dirLocked = false;
+        cards[order[0]].style.transition = 'none';
+      }
+
+      function onMove(cx, cy, prevDefault) {
+        if (!dragging) return;
+        var dx = cx - startX, dy = cy - startY;
+
+        // Bloquear dirección después de 6px para no disparar en taps
+        if (!dirLocked && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+          dirLocked = true;
+        }
+        if (!dirLocked) return;
+
+        // Prevenir scroll nativo del contenedor mientras se arrastra la carta
+        if (prevDefault) prevDefault();
+
+        // Carta del tope sigue al dedo en cualquier dirección
+        var card = cards[order[0]];
+        var rot  = dx * 0.04;
+        card.style.transform = 'translateX(-50%) translateX(' + dx + 'px) translateY(' + dy + 'px) scale(1) rotate(' + rot + 'deg)';
+
+        // La segunda carta "sube" progresivamente según la distancia total
+        if (order[1] !== undefined) {
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var p    = Math.min(dist / 110, 1);
+          var s1   = STATES[1], s0 = STATES[0];
+          var next = cards[order[1]];
+          next.style.transition = 'none';
+          next.style.transform  = 'translateX(-50%) translateX(' + (s1.x * (1 - p)) + 'px) translateY(' + (s1.y * (1 - p)) + 'px) scale(' + (s1.scale + (s0.scale - s1.scale) * p) + ') rotate(' + s1.rotate + 'deg)';
+        }
+      }
+
+      function onEnd(cx, cy) {
+        if (!dragging) return;
+        dragging = false;
+        if (!dirLocked) return;
+        var dx   = cx - startX;
+        var dy   = cy - startY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 65) sendToBack(dx, dy);
+        else           applyAll(true);
+      }
+
+      // Touch
+      stack.addEventListener('touchstart', function (e) { onStart(e.touches[0].clientX, e.touches[0].clientY); },                                   { passive: true  });
+      stack.addEventListener('touchmove',  function (e) { onMove(e.touches[0].clientX, e.touches[0].clientY, function () { e.preventDefault(); }); }, { passive: false });
+      stack.addEventListener('touchend',   function (e) { onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY); },                         { passive: true  });
+
+      // Mouse (desktop)
+      stack.addEventListener('mousedown',    function (e) { onStart(e.clientX, e.clientY); });
+      document.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY, null); });
+      document.addEventListener('mouseup',   function (e) { onEnd(e.clientX, e.clientY); });
+
+      // ── Init ─────────────────────────────────────────────────────────
+      applyAll(false);
+      updateCounter();
+
+      // Ocultar placeholder cuando la imagen cargue correctamente
+      cards.forEach(function (card) {
+        var img = card.querySelector('img');
+        var ph  = card.querySelector('.inv-card-placeholder');
+        if (!img || !ph) return;
+        function hide() { if (img.naturalWidth > 0) ph.style.display = 'none'; }
+        if (img.complete) { hide(); } else { img.addEventListener('load', hide); }
+      });
+
+    })();
+  </script>
+
+  <!-- IntersectionObserver para animaciones de entrada por pantalla -->
+  <script>
+    (function () {
+      const scrollContainer = document.getElementById('inv-scroll-container');
+      const screens         = document.querySelectorAll('.inv-screen');
+      const dots            = document.querySelectorAll('.inv-dot');
+
+      // --- IntersectionObserver: activa .is-visible en cada .inv-reveal
+      //     cuando su pantalla entra en el viewport del scroll-container ---
+      const revealObs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              // Activa todos los .inv-reveal dentro de la pantalla visible
+              entry.target.querySelectorAll('.inv-reveal, .inv-reveal-scale').forEach(function (el) {
+                el.classList.add('is-visible');
+              });
+            }
+          });
+        },
+        {
+          root:      scrollContainer,
+          threshold: 0.45,   // la pantalla debe ser 45% visible para disparar
+        }
+      );
+
+      screens.forEach(function (screen) { revealObs.observe(screen); });
+
+      // --- IntersectionObserver: actualiza los puntos de navegacion ---
+      const dotObs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var idx = entry.target.dataset.screen;
+              dots.forEach(function (d) { d.classList.remove('active'); });
+              var activeDot = document.querySelector('.inv-dot[data-screen="' + idx + '"]');
+              if (activeDot) activeDot.classList.add('active');
+            }
+          });
+        },
+        {
+          root:      scrollContainer,
+          threshold: 0.55,
+        }
+      );
+
+      screens.forEach(function (screen) { dotObs.observe(screen); });
+
+      // --- La primera pantalla se activa inmediatamente al cargar ---
+      var firstScreen = screens[0];
+      if (firstScreen) {
+        setTimeout(function () {
+          firstScreen.querySelectorAll('.inv-reveal, .inv-reveal-scale').forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+        }, 200);
+      }
+    })();
+  </script>
+
+  <script type="module">
+
+    import * as THREE from 'three';
+    import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass }  from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { ShaderPass }       from 'three/addons/postprocessing/ShaderPass.js';
+    import { OutputPass }       from 'three/addons/postprocessing/OutputPass.js';
+    import { RoomEnvironment }  from 'three/addons/environments/RoomEnvironment.js';
+
+    /* ============================================================
+       DETECCION DE CAPACIDADES Y CONTEXTO
+    ============================================================ */
+    const IS_MOBILE = /Mobi|Android|iPhone|iPad|iPod|Touch/i.test(navigator.userAgent)
+                      || window.innerWidth < 768;
+
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ============================================================
+       CONFIG — TODAS LAS VARIABLES AJUSTABLES AQUI
+    ============================================================ */
+    const CONFIG = {
+      // --- Particulas de glitter ---
+      PARTICLE_COUNT_DESKTOP : 10000,   // cantidad en desktop
+      PARTICLE_COUNT_MOBILE  : 10000,   // cantidad en mobile (60fps friendly)
+      PARTICLE_SIZE_MIN      : 0.012,  // tamano minimo de cada glitter (unidades Three.js)
+      PARTICLE_SIZE_MAX      : 0.055,  // tamano maximo
+      FALL_SPEED             : 0.0118, // velocidad de caida vertical (reducir para efecto mas suave)
+      DRIFT_SPEED            : 0.0104, // deriva horizontal suave (como resistencia del aire)
+      ROTATION_SPEED         : 0.018,  // velocidad de rotacion de cada particula en sus 3 ejes
+      SPAWN_HEIGHT           : 7.0,    // altura desde donde caen las particulas (Y positivo)
+      FIELD_WIDTH            : 12.0,   // ancho del campo de particulas
+      FIELD_DEPTH            : 8.0,    // profundidad del campo de particulas
+
+      // --- Luces dinamicas ---
+      LIGHT_COUNT            : IS_MOBILE ? 3 : 6,   // numero de luces de acento
+      LIGHT_RADIUS           : 4.5,    // radio de orbita de las luces
+      LIGHT_SPEED            : 0.0003, // velocidad de movimiento de las luces
+      LIGHT_INTENSITY        : IS_MOBILE ? 12 : 28,  // intensidad de cada luz
+      LIGHT_DECAY            : 2.2,    // decay fisico (2 = cuadratico, realista)
+
+      // --- Bokeh de fondo ---
+      BOKEH_COUNT            : IS_MOBILE ? 8 : 16,  // esferas de bokeh de fondo
+      BOKEH_SIZE_MIN         : 0.15,
+      BOKEH_SIZE_MAX         : 0.65,
+      BOKEH_DEPTH_MIN        : -6.0,   // profundidad minima (atras)
+      BOKEH_DEPTH_MAX        : -2.5,   // profundidad maxima
+
+      // --- Post-processing ---
+      BLOOM_STRENGTH         : IS_MOBILE ? 0.8 : 1.2,
+      BLOOM_RADIUS           : 0.4,
+      BLOOM_THRESHOLD        : 0.65,   // más alto = solo los destellos más intensos brillan
+      FILM_GRAIN_INTENSITY   : 0.018,  // intensidad del film grain (0 = desactivado)
+      VIGNETTE_DARKNESS      : 0.65,   // oscuridad de la viñeta (0 = ninguna, 1 = total)
+
+      // --- Lens flares procedurales ---
+      FLARE_COUNT            : 0,   // desactivados — se ven como cuadrados
+
+      // --- Colores (paleta plateada) ---
+      COLOR_BG               : 0xd0d0db,
+      COLOR_AMBIENT          : 0x2a2a40,   // luz ambiental plateada-fría
+      // Array de colores para las luces dinamicas (plata, cromo, acero azulado)
+      LIGHT_COLORS           : [
+        0xffffff, 0xe8e8f0, 0xc0c0d0,
+        0xb0c4de, 0xd0d0e8, 0xf0f0ff
+      ],
+    };
+
+    const PARTICLE_COUNT = IS_MOBILE ? CONFIG.PARTICLE_COUNT_MOBILE : CONFIG.PARTICLE_COUNT_DESKTOP;
+
+    /* ============================================================
+       VERIFICACION WEBGL
+    ============================================================ */
+    function checkWebGL() {
+      try {
+        const canvas = document.createElement('canvas');
+        return !!(
+          window.WebGLRenderingContext &&
+          (canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+        );
+      } catch (e) {
+        return false;
+      }
+    }
+
+    if (!checkWebGL()) {
+      document.body.classList.add('no-webgl');
+      document.getElementById('bg-canvas').style.display = 'none';
+    } else {
+      initScene();
+    }
+
+    /* ============================================================
+       INICIALIZACION DE LA ESCENA
+    ============================================================ */
+    function initScene() {
+      const canvas = document.getElementById('bg-canvas');
+
+      /* --- Renderer --- */
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: !IS_MOBILE,        // antialias desactivado en mobile
+        alpha: false,
+        powerPreference: IS_MOBILE ? 'low-power' : 'high-performance',
+        stencil: false,
+        depth: true,
+      });
+      renderer.setPixelRatio(IS_MOBILE ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.shadowMap.enabled = false; // sombras desactivadas para rendimiento
+
+      /* --- Environment map (CRÍTICO para materiales metálicos) ---
+         Sin envMap, metalness=1 se ve negro porque no tiene nada que reflejar.
+         RoomEnvironment genera un HDRI simple que da vida a los materiales. */
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      pmremGenerator.compileEquirectangularShader();
+      const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+      pmremGenerator.dispose();
+
+      /* --- Escena --- */
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(CONFIG.COLOR_BG);
+      scene.environment = envTexture;
+      scene.environmentIntensity = 0.2;
+      // Niebla plateada para dar profundidad — el glitter lejano se funde en plata
+      scene.fog = new THREE.FogExp2(0xd0d0db, IS_MOBILE ? 0.06 : 0.035);
+
+      /* --- Camara --- */
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        50
+      );
+      camera.position.set(0, 1.5, 5.5);
+      camera.lookAt(0, 0, 0);
+
+      /* --- Iluminacion --- */
+      // Luz ambiental fria muy suave (relleno de sombras)
+      const ambientLight = new THREE.AmbientLight(CONFIG.COLOR_AMBIENT, 0.4);
+      scene.add(ambientLight);
+
+      // Luz hemisferica para simular GI basico
+      const hemiLight = new THREE.HemisphereLight(0x8888aa, 0x222233, 0.3);
+      scene.add(hemiLight);
+
+      /* --- Luces dinamicas de acento --- */
+      const dynamicLights = [];
+      for (let i = 0; i < CONFIG.LIGHT_COUNT; i++) {
+        const color = CONFIG.LIGHT_COLORS[i % CONFIG.LIGHT_COLORS.length];
+        const light = new THREE.PointLight(color, CONFIG.LIGHT_INTENSITY, 12, CONFIG.LIGHT_DECAY);
+        // Fase inicial distribuida uniformemente
+        const phase = (i / CONFIG.LIGHT_COUNT) * Math.PI * 2;
+        light.userData.phase     = phase;
+        light.userData.orbitR    = CONFIG.LIGHT_RADIUS * (0.7 + Math.random() * 0.6);
+        light.userData.orbitY    = (Math.random() - 0.5) * 2.5;
+        light.userData.orbitSpeed = CONFIG.LIGHT_SPEED * (0.6 + Math.random() * 0.8);
+        light.userData.orbitTilt = Math.random() * 0.4;
+        scene.add(light);
+        dynamicLights.push(light);
+      }
+
+
+      /* ============================================================
+         SISTEMA DE PARTICULAS DE GLITTER (INSTANCED MESH)
+         Cada particula es un plano muy pequeno con material espejo.
+         InstancedMesh = UNA sola draw call para MILES de particulas.
+      ============================================================ */
+
+      // Geometria base del glitter: disco hexagonal muy fino
+      // Usamos un circulo con pocos segmentos para peso bajo
+      const glitterGeo = new THREE.CircleGeometry(1, 6); // hexagono
+
+      // Material del glitter: fisicamente metalico con variacion por instancia
+      const glitterMat = new THREE.MeshPhysicalMaterial({
+        color          : 0xffffff,
+        metalness      : 1.0,
+        roughness      : 0.1,
+        reflectivity   : 1.0,
+        envMapIntensity: 2.5,
+        emissive       : new THREE.Color(0x9999bb),
+        emissiveIntensity: 0.12,
+        side           : THREE.DoubleSide,
+        vertexColors   : false,
+      });
+
+      // Habilitar colores por instancia
+      const glitterMesh = new THREE.InstancedMesh(glitterGeo, glitterMat, PARTICLE_COUNT);
+      glitterMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      scene.add(glitterMesh);
+
+      // Colores por instancia (variaciones de gris/plata/blanco)
+      const instanceColors = new Float32Array(PARTICLE_COUNT * 3);
+      // Tabla de colores plateados precomputada
+      const silverPalette = [
+        [1.00, 1.00, 1.00],   // blanco puro
+        [0.94, 0.94, 0.96],   // blanco plateado
+        [0.75, 0.75, 0.80],   // plata media
+        [0.85, 0.85, 0.92],   // plata clara
+        [0.69, 0.77, 0.87],   // acero azulado
+        [0.96, 0.96, 1.00],   // blanco frio
+        [0.60, 0.60, 0.68],   // plata oscura
+      ];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const c = silverPalette[Math.floor(Math.random() * silverPalette.length)];
+        instanceColors[i * 3]     = c[0];
+        instanceColors[i * 3 + 1] = c[1];
+        instanceColors[i * 3 + 2] = c[2];
+      }
+      glitterMesh.instanceColor = new THREE.InstancedBufferAttribute(instanceColors, 3);
+
+      // Datos de estado por particula (posicion, velocidad, rotacion, tamano)
+      const pPos   = new Float32Array(PARTICLE_COUNT * 3);  // posicion xyz
+      const pVel   = new Float32Array(PARTICLE_COUNT * 3);  // velocidad xyz
+      const pRot   = new Float32Array(PARTICLE_COUNT * 3);  // angulos de rotacion
+      const pRotV  = new Float32Array(PARTICLE_COUNT * 3);  // velocidad angular
+      const pScale = new Float32Array(PARTICLE_COUNT);       // escala
+
+      // Objeto temporal reutilizable para construir matrices (zero GC)
+      const dummy = new THREE.Object3D();
+
+      function spawnParticle(i, fromTop = false) {
+        const hw = CONFIG.FIELD_WIDTH / 2;
+        const hd = CONFIG.FIELD_DEPTH / 2;
+
+        pPos[i*3]   = (Math.random() - 0.5) * CONFIG.FIELD_WIDTH;
+        pPos[i*3+1] = fromTop
+          ? CONFIG.SPAWN_HEIGHT + Math.random() * 2
+          : (Math.random() - 0.5) * (CONFIG.SPAWN_HEIGHT + 4);
+        pPos[i*3+2] = (Math.random() - 0.5) * CONFIG.FIELD_DEPTH;
+
+        // Velocidad: caida suave con deriva horizontal aleatoria
+        pVel[i*3]   = (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 4;
+        pVel[i*3+1] = -(CONFIG.FALL_SPEED * (0.5 + Math.random() * 1.5));
+        pVel[i*3+2] = (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 2;
+
+        // Rotacion inicial aleatoria en los 3 ejes
+        pRot[i*3]   = Math.random() * Math.PI * 2;
+        pRot[i*3+1] = Math.random() * Math.PI * 2;
+        pRot[i*3+2] = Math.random() * Math.PI * 2;
+
+        // Velocidad angular — el glitter tumbles en el aire
+        const rs = CONFIG.ROTATION_SPEED;
+        pRotV[i*3]   = (Math.random() - 0.5) * rs * 2;
+        pRotV[i*3+1] = (Math.random() - 0.5) * rs * 3;
+        pRotV[i*3+2] = (Math.random() - 0.5) * rs;
+
+        // Tamano: mezcla de particulas pequenas y algunas mas grandes para profundidad
+        const t = Math.random();
+        pScale[i] = CONFIG.PARTICLE_SIZE_MIN + t * t * (CONFIG.PARTICLE_SIZE_MAX - CONFIG.PARTICLE_SIZE_MIN);
+      }
+
+      // Spawn inicial distribuido por todo el campo
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        spawnParticle(i, false);
+      }
+
+      /* ============================================================
+         BOKEH DE FONDO (esferas desenfocadas de luz plateada)
+      ============================================================ */
+      const bokehGeo = new THREE.SphereGeometry(1, IS_MOBILE ? 6 : 10, IS_MOBILE ? 6 : 10);
+      // Cada esfera bokeh tiene material emisivo plateado con opacidad variable
+      // Como InstancedMesh no permite materiales por instancia facilmente,
+      // usamos un shader material con colores por instancia y emissive
+      const bokehMat = new THREE.MeshStandardMaterial({
+        color      : 0x000000,
+        emissive   : 0xffffff,
+        emissiveIntensity: 0.0,  // se controla via instanceColor
+        roughness  : 1.0,
+        metalness  : 0.0,
+        transparent: true,
+        opacity    : 0.0,        // transparencia base
+        depthWrite : false,
+        blending   : THREE.AdditiveBlending,
+      });
+      const bokehInstanced = new THREE.InstancedMesh(bokehGeo, bokehMat, CONFIG.BOKEH_COUNT);
+      scene.add(bokehInstanced);
+
+      // Colores y posiciones de bokeh
+      const bokehColors = new Float32Array(CONFIG.BOKEH_COUNT * 3);
+      const bokehData   = []; // {scale, phase, speed, baseY, baseX}
+
+      for (let i = 0; i < CONFIG.BOKEH_COUNT; i++) {
+        const brightness = 0.04 + Math.random() * 0.18;
+        const warm = Math.random() > 0.5;
+        bokehColors[i*3]   = brightness * (warm ? 1.0 : 0.88);
+        bokehColors[i*3+1] = brightness * (warm ? 0.95 : 0.90);
+        bokehColors[i*3+2] = brightness * (warm ? 0.90 : 1.0);
+
+        bokehData.push({
+          scale : CONFIG.BOKEH_SIZE_MIN + Math.random() * (CONFIG.BOKEH_SIZE_MAX - CONFIG.BOKEH_SIZE_MIN),
+          phase : Math.random() * Math.PI * 2,
+          speed : 0.0002 + Math.random() * 0.0004,
+          baseX : (Math.random() - 0.5) * 14,
+          baseY : (Math.random() - 0.5) * 6,
+          depth : CONFIG.BOKEH_DEPTH_MIN + Math.random() * (CONFIG.BOKEH_DEPTH_MAX - CONFIG.BOKEH_DEPTH_MIN),
+        });
+      }
+      bokehInstanced.instanceColor = new THREE.InstancedBufferAttribute(bokehColors, 3);
+
+      /* ============================================================
+         DISCO BALL — mirror ball plateada con flatShading
+         MeshStandardMaterial metalness=1 roughness=0.05 → facetas espejo.
+         flatShading: cada triangulo tiene su propio normal flat →
+         el glitter de luces dinamicas rebota diferente en cada faceta.
+         EnvMapIntensity bajo para evitar sobreexposicion con bloom.
+      ============================================================ */
+
+      const BALL_R   = IS_MOBILE ? 0.40 : 0.52;
+      const BALL_POS = new THREE.Vector3(
+        IS_MOBILE ? 0.62 : 2.4,
+        IS_MOBILE ? 1.80 : 2.0,
+        IS_MOBILE ? 2.0  : 0.5
+      );
+
+      let discoBall = null;
+      let discoWire = null;
+      const discoSpots = [];
+
+      try {
+        const DISCO_SEG_W = IS_MOBILE ? 24 : 32;
+        const DISCO_SEG_H = IS_MOBILE ? 14 : 18;
+        const discoGeo    = new THREE.SphereGeometry(BALL_R, DISCO_SEG_W, DISCO_SEG_H);
+
+        // MeshMatCapMaterial + flatShading: la textura matcap tiene fondo oscuro
+        // con puntos de luz brillantes (blancos, azules, rosas).
+        // Con flatShading cada faceta usa el mismo normal plano → muestrea un
+        // punto solido del matcap. Al girar, las facetas cambian de angulo en
+        // espacio de vista → samplea distintos colores → efecto mosaico espejo.
+        function buildMatcap() {
+          const S = 256, h = S / 2;
+          const cv = document.createElement('canvas');
+          cv.width = cv.height = S;
+          const c = cv.getContext('2d');
+          if (!c) return null;
+
+          // Fondo casi negro — la mayoria de los tiles refleja el techo oscuro
+          c.fillStyle = '#040408';
+          c.fillRect(0, 0, S, S);
+
+          // Mascara circular
+          c.save();
+          c.beginPath();
+          c.arc(h, h, h, 0, Math.PI * 2);
+          c.clip();
+
+          // Plata ambiental muy sutil en el hemisferio superior
+          // para que no quede 100% negro y se lea la forma esferica
+          const amb = c.createLinearGradient(0, 0, 0, S);
+          amb.addColorStop(0.0,  'rgba(80,82,110,0.55)');
+          amb.addColorStop(0.45, 'rgba(35,36,55,0.30)');
+          amb.addColorStop(1.0,  'rgba(10,10,18,0.00)');
+          c.fillStyle = amb;
+          c.fillRect(0, 0, S, S);
+
+          // Focos de luz reflejados — nítidos, con caída rápida (como un espejo real)
+          // El truco: radio pequeño + alfa 1.0 en el centro → tiles que "pasan"
+          // por ese ángulo se iluminan de golpe, igual que una disco ball real.
+          const spots = [
+            { x: 0.62, y: 0.24, r: 0.13, rgb: '255,255,255'  },  // blanco cenital brillante
+            { x: 0.36, y: 0.29, r: 0.08, rgb: '180,210,255'  },  // azul frío izquierda
+            { x: 0.76, y: 0.55, r: 0.07, rgb: '255,170,210'  },  // rosa derecha
+            { x: 0.25, y: 0.65, r: 0.07, rgb: '150,255,210'  },  // menta inferior-izq
+            { x: 0.66, y: 0.72, r: 0.06, rgb: '255,220,150'  },  // dorado cálido inferior
+            { x: 0.50, y: 0.14, r: 0.06, rgb: '200,195,255'  },  // lavanda superior
+            { x: 0.84, y: 0.36, r: 0.05, rgb: '255,255,195'  },  // amarillo lateral
+            { x: 0.18, y: 0.42, r: 0.05, rgb: '175,230,255'  },  // cian izquierda
+            { x: 0.55, y: 0.82, r: 0.05, rgb: '255,200,180'  },  // naranja suave bajo
+          ];
+
+          for (const s of spots) {
+            const sx = s.x * S, sy = s.y * S, sr = s.r * S;
+            const g = c.createRadialGradient(sx, sy, 0, sx, sy, sr);
+            // Caída rápida = reflejo nítido tipo espejo (no difuso)
+            g.addColorStop(0.00, `rgba(${s.rgb},1.00)`);
+            g.addColorStop(0.30, `rgba(${s.rgb},0.80)`);
+            g.addColorStop(0.65, `rgba(${s.rgb},0.15)`);
+            g.addColorStop(1.00, `rgba(${s.rgb},0.00)`);
+            c.fillStyle = g;
+            c.fillRect(0, 0, S, S);
+          }
+
+          // Borde de la esfera: highlight muy sutil en el limbo para dar volumen
+          const rim = c.createRadialGradient(h, h, h * 0.72, h, h, h);
+          rim.addColorStop(0.0, 'rgba(60,62,88,0.00)');
+          rim.addColorStop(1.0, 'rgba(100,105,145,0.35)');
+          c.fillStyle = rim;
+          c.fillRect(0, 0, S, S);
+
+          c.restore();
+          return new THREE.CanvasTexture(cv);
+        }
+
+        const matcapTex = buildMatcap();
+        const discoMat  = matcapTex
+          ? new THREE.MeshMatcapMaterial({ matcap: matcapTex, flatShading: true })
+          : new THREE.MeshStandardMaterial({ color: 0xe8e8f2, metalness: 1.0, roughness: 0.05, flatShading: true });
+
+        discoBall = new THREE.Mesh(discoGeo, discoMat);
+        discoBall.position.copy(BALL_POS);
+        scene.add(discoBall);
+
+        // Hilo de suspension
+        const discoWireGeo = new THREE.CylinderGeometry(0.007, 0.007, 1.0, 5);
+        const discoWireMat = new THREE.MeshStandardMaterial({ color: 0xc0c0cc, metalness: 1.0, roughness: 0.1 });
+        discoWire = new THREE.Mesh(discoWireGeo, discoWireMat);
+        scene.add(discoWire);
+
+        // SpotLights suaves que orbitan la bola — proyectan destellos sobre
+        // el glitter circundante. Intensidad baja para no saturar la bola.
+        const DISCO_SPOTS_N = IS_MOBILE ? 1 : 2;
+        for (let i = 0; i < DISCO_SPOTS_N; i++) {
+          const sp = new THREE.SpotLight(0xeeeeff, IS_MOBILE ? 2 : 5, IS_MOBILE ? 6 : 12, Math.PI / 6, 0.5, 1.5);
+          sp.userData.phase = (i / DISCO_SPOTS_N) * Math.PI * 2;
+          sp.userData.speed = 0.18 + i * 0.12;
+          sp.target.position.copy(BALL_POS);
+          scene.add(sp);
+          scene.add(sp.target);
+          discoSpots.push(sp);
+        }
+      } catch (e) {
+        console.warn('Disco ball init failed:', e);
+      }
+
+      /* ============================================================
+         LENS FLARES PROCEDURALES (solo desktop)
+         Usamos sprites con ShaderMaterial para maximo control.
+      ============================================================ */
+      const flares = [];
+      if (CONFIG.FLARE_COUNT > 0) {
+        // Shader de flare: estrella con rays y halo
+        const flareMat = new THREE.ShaderMaterial({
+          uniforms: {
+            uTime   : { value: 0 },
+            uColor  : { value: new THREE.Color(0xffffff) },
+            uOpacity: { value: 1.0 },
+          },
+          vertexShader: /* glsl */`
+            varying vec2 vUv;
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: /* glsl */`
+            uniform float uTime;
+            uniform vec3 uColor;
+            uniform float uOpacity;
+            varying vec2 vUv;
+
+            float star(vec2 uv, float arms, float sharpness) {
+              float angle = atan(uv.y, uv.x);
+              float r     = length(uv);
+              float s     = cos(angle * arms) * 0.5 + 0.5;
+              s = pow(s, sharpness);
+              return s / (r * 15.0 + 1.0);
+            }
+
+            void main() {
+              vec2 uv  = vUv * 2.0 - 1.0;
+              float r  = length(uv);
+
+              // Halo gaussiano
+              float halo = exp(-r * r * 3.5);
+
+              // Estrella de 4 puntas
+              float s4 = star(uv, 4.0, 6.0) * 0.6;
+
+              // Estrella de 8 puntas mas difusa
+              float s8 = star(uv, 8.0, 2.0) * 0.2;
+
+              // Aberracion cromatica muy sutil en el borde
+              float rChannel = exp(-(r-0.02)*(r-0.02)*20.0) * 0.15;
+              float bChannel = exp(-(r+0.02)*(r+0.02)*20.0) * 0.15;
+
+              float brightness = halo + s4 + s8;
+              brightness *= uOpacity * (0.7 + 0.3 * sin(uTime * 2.1 + r * 5.0));
+
+              // Resultado con leve aberracion RGB
+              vec3 col = uColor * brightness;
+              col.r += rChannel * uOpacity;
+              col.b += bChannel * uOpacity;
+
+              gl_FragColor = vec4(col, brightness * 0.85);
+            }
+          `,
+          transparent : true,
+          depthWrite  : false,
+          blending    : THREE.AdditiveBlending,
+          side        : THREE.DoubleSide,
+        });
+
+        for (let i = 0; i < CONFIG.FLARE_COUNT; i++) {
+          const flareGeo  = new THREE.PlaneGeometry(1.8, 1.8);
+          const mat       = flareMat.clone();
+          mat.uniforms.uColor.value = new THREE.Color(CONFIG.LIGHT_COLORS[i % CONFIG.LIGHT_COLORS.length]);
+          const flareMesh = new THREE.Mesh(flareGeo, mat);
+          flareMesh.userData.phase = (i / CONFIG.FLARE_COUNT) * Math.PI * 2;
+          scene.add(flareMesh);
+          flares.push(flareMesh);
+        }
+      }
+
+      /* ============================================================
+         POST-PROCESSING: BLOOM + GRAIN + VIGNETTE
+      ============================================================ */
+      const composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+
+      const bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        CONFIG.BLOOM_STRENGTH,
+        CONFIG.BLOOM_RADIUS,
+        CONFIG.BLOOM_THRESHOLD
+      );
+      composer.addPass(bloomPass);
+
+      // Shader combinado: Film Grain + Viñeta + Aberracion cromatica sutil
+      const finalPass = new ShaderPass({
+        uniforms: {
+          tDiffuse    : { value: null },
+          uTime       : { value: 0.0 },
+          uGrainAmount: { value: CONFIG.FILM_GRAIN_INTENSITY },
+          uVignette   : { value: CONFIG.VIGNETTE_DARKNESS },
+          uAberration : { value: IS_MOBILE ? 0.0005 : 0.002 },
+        },
+        vertexShader: /* glsl */`
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: /* glsl */`
+          uniform sampler2D tDiffuse;
+          uniform float uTime;
+          uniform float uGrainAmount;
+          uniform float uVignette;
+          uniform float uAberration;
+          varying vec2 vUv;
+
+          // Hash para ruido pseudoaleatorio
+          float hash(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+          }
+
+          void main() {
+            vec2 uv = vUv;
+
+            // Aberracion cromatica: channels R y B ligeramente desplazados desde el centro
+            vec2 dir    = uv - 0.5;
+            float dist  = length(dir);
+            vec2 offset = normalize(dir) * dist * uAberration;
+
+            float r = texture2D(tDiffuse, uv + offset).r;
+            float g = texture2D(tDiffuse, uv).g;
+            float b = texture2D(tDiffuse, uv - offset).b;
+
+            vec4 color = vec4(r, g, b, 1.0);
+
+            // Film grain suave
+            float grain = hash(uv * 500.0 + uTime * 0.1) - 0.5;
+            color.rgb += grain * uGrainAmount;
+
+            // Viñeta elegante (suavizada con smoothstep)
+            float vignette = 1.0 - smoothstep(0.45, 1.0, dist * 1.35);
+            vignette = mix(1.0, vignette, uVignette);
+            color.rgb *= vignette;
+
+            gl_FragColor = color;
+          }
+        `,
+      });
+      composer.addPass(finalPass);
+      composer.addPass(new OutputPass());
+
+      /* ============================================================
+         RESIZE HANDLER
+      ============================================================ */
+      function onResize() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+        composer.setSize(w, h);
+        bloomPass.resolution.set(w, h);
+      }
+      window.addEventListener('resize', onResize, { passive: true });
+
+      /* ============================================================
+         MOVIMIENTO SUAVE DE LA CAMARA con el raton / giroscopio
+      ============================================================ */
+      const camTarget = new THREE.Vector3(0, 1.5, 5.5);
+      const camCurrent = new THREE.Vector3(0, 1.5, 5.5);
+      let mouseX = 0, mouseY = 0;
+
+      if (!REDUCED_MOTION) {
+        // Desktop: seguimiento del raton
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
+          mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        }, { passive: true });
+
+        // Mobile: giroscopio si esta disponible
+        if (IS_MOBILE && window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', (e) => {
+            if (e.gamma !== null) mouseX = Math.max(-1, Math.min(1, e.gamma / 30));
+            if (e.beta  !== null) mouseY = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+          }, { passive: true });
+        }
+      }
+
+      /* ============================================================
+         LOOP DE ANIMACION
+      ============================================================ */
+      const clock = new THREE.Clock();
+      let frameCount = 0;
+      // Throttle del cubeCamera: actualiza cada N frames para no matar el rendimiento
+      const CUBE_CAM_INTERVAL = 4;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta   = Math.min(clock.getDelta(), 0.05);
+        const elapsed = clock.getElapsedTime();
+        frameCount++;
+
+        /* --- Movimiento de camara suave --- */
+        if (!REDUCED_MOTION) {
+          camTarget.x = mouseX * 0.3;
+          camTarget.y = 1.5 - mouseY * 0.15;
+        }
+        camCurrent.lerp(camTarget, 0.03);
+        camera.position.copy(camCurrent);
+        camera.lookAt(0, 0, 0);
+
+        /* --- Update luces dinamicas --- */
+        for (let i = 0; i < dynamicLights.length; i++) {
+          const l = dynamicLights[i];
+          const t = elapsed * l.userData.orbitSpeed + l.userData.phase;
+          // Orbita eliptica con inclinacion
+          l.position.x = Math.cos(t) * l.userData.orbitR;
+          l.position.y = l.userData.orbitY + Math.sin(t * 1.37) * 1.5;
+          l.position.z = Math.sin(t) * l.userData.orbitR * 0.5;
+          // Parpadeo suave de intensidad
+          l.intensity = CONFIG.LIGHT_INTENSITY * (0.75 + 0.25 * Math.sin(elapsed * 2.3 + i * 1.7));
+        }
+
+        /* --- Update bokeh --- */
+        const dummyB = new THREE.Object3D();
+        for (let i = 0; i < CONFIG.BOKEH_COUNT; i++) {
+          const bd = bokehData[i];
+          const t  = elapsed * bd.speed + bd.phase;
+          dummyB.position.set(
+            bd.baseX + Math.sin(t * 0.7) * 0.8,
+            bd.baseY + Math.sin(t * 1.1) * 0.5,
+            bd.depth
+          );
+          dummyB.scale.setScalar(bd.scale);
+          dummyB.updateMatrix();
+          bokehInstanced.setMatrixAt(i, dummyB.matrix);
+        }
+        bokehInstanced.instanceMatrix.needsUpdate = true;
+
+        /* --- Update disco ball --- */
+        if (discoBall) {
+          discoBall.rotation.y += REDUCED_MOTION ? 0.0004 : 0.0022;
+          discoBall.rotation.x  = 0;
+
+          const dSwing = Math.sin(elapsed * 0.38) * (REDUCED_MOTION ? 0.002 : 0.014);
+          discoBall.position.x = BALL_POS.x + dSwing * 1.5;
+          discoBall.position.y = BALL_POS.y + Math.sin(elapsed * 0.29) * (REDUCED_MOTION ? 0.001 : 0.008);
+
+          if (discoWire) {
+            discoWire.position.set(
+              discoBall.position.x,
+              discoBall.position.y + BALL_R + 0.50,
+              discoBall.position.z
+            );
+            discoWire.rotation.z = dSwing * 1.4;
+          }
+
+          for (let i = 0; i < discoSpots.length; i++) {
+            const sp = discoSpots[i];
+            const t  = elapsed * sp.userData.speed + sp.userData.phase;
+            sp.position.set(
+              discoBall.position.x + Math.cos(t) * 3.2,
+              discoBall.position.y + 1.4 + Math.sin(t * 1.2) * 0.8,
+              discoBall.position.z + Math.sin(t) * 2.0
+            );
+            sp.target.position.copy(discoBall.position);
+            sp.target.updateMatrixWorld();
+            const baseI = IS_MOBILE ? 2 : 5;
+            sp.intensity = baseI * (0.72 + 0.28 * Math.sin(elapsed * 4.5 + i * 2.1));
+          }
+        }
+
+
+        /* --- Update particulas de glitter --- */
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const ix = i * 3;
+
+          // Fisica: aplicar velocidad
+          pPos[ix]   += pVel[ix];
+          pPos[ix+1] += pVel[ix+1];
+          pPos[ix+2] += pVel[ix+2];
+
+          // Derive horizontal suave (turbulencia de aire)
+          pVel[ix]   += (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 0.1;
+          pVel[ix+2] += (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 0.05;
+
+          // Amortiguacion de deriva para no diverger
+          pVel[ix]   *= 0.995;
+          pVel[ix+2] *= 0.997;
+
+          // Rotacion en 3 ejes
+          pRot[ix]   += pRotV[ix];
+          pRot[ix+1] += pRotV[ix+1];
+          pRot[ix+2] += pRotV[ix+2];
+
+          // Respawn si cae por debajo del piso
+          if (pPos[ix+1] < -2.5) {
+            spawnParticle(i, true);
+          }
+
+          // Construir matriz de instancia
+          dummy.position.set(pPos[ix], pPos[ix+1], pPos[ix+2]);
+          dummy.rotation.set(pRot[ix], pRot[ix+1], pRot[ix+2]);
+          dummy.scale.setScalar(pScale[i]);
+          dummy.updateMatrix();
+          glitterMesh.setMatrixAt(i, dummy.matrix);
+        }
+        glitterMesh.instanceMatrix.needsUpdate = true;
+
+        /* --- Update lens flares --- */
+        for (let i = 0; i < flares.length; i++) {
+          const f    = flares[i];
+          const lRef = dynamicLights[i % dynamicLights.length];
+          // Flare sigue a su luz
+          f.position.copy(lRef.position);
+          f.lookAt(camera.position);
+          f.material.uniforms.uTime.value    = elapsed;
+          f.material.uniforms.uOpacity.value = 0.4 + 0.3 * Math.sin(elapsed * 1.5 + i);
+          const fs = 0.6 + 0.4 * Math.sin(elapsed * 0.8 + i * 2.1);
+          f.scale.setScalar(fs);
+        }
+
+        /* --- Update final shader (grain animado) --- */
+        finalPass.uniforms.uTime.value = elapsed;
+
+        /* --- Render con post-processing --- */
+        composer.render();
+      }
+
+      /* Arrancar el loop */
+      animate();
+
+      /* ============================================================
+         REDUCIR ANIMACIONES si prefers-reduced-motion
+      ============================================================ */
+      if (REDUCED_MOTION) {
+        // Reducir velocidades a la mitad, no eliminar para mantener algo de vida
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          pVel[i*3+1] *= 0.3;
+          pRotV[i*3]  *= 0.2;
+          pRotV[i*3+1]*= 0.2;
+          pRotV[i*3+2]*= 0.2;
+        }
+        CONFIG.LIGHT_SPEED *= 0.2;
+      }
+    } // fin initScene
+
+  </script>
+</body>
+</html>
