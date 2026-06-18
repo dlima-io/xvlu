@@ -2051,31 +2051,14 @@
       bokehInstanced.instanceColor = new THREE.InstancedBufferAttribute(bokehColors, 3);
 
       /* ============================================================
-         DISCO BALL — mirror ball plateada con flatShading
-         MeshStandardMaterial metalness=1 roughness=0.05 → facetas espejo.
-         flatShading: cada triangulo tiene su propio normal flat →
-         el glitter de luces dinamicas rebota diferente en cada faceta.
-         EnvMapIntensity bajo para evitar sobreexposicion con bloom.
+         DISCO BALLS — múltiples esferas espejo cayendo en cascada,
+         distintos tamaños y velocidades aleatorias.
       ============================================================ */
 
-      const BALL_R   = IS_MOBILE ? 0.40 : 0.52;
-      const BALL_POS = new THREE.Vector3(
-        IS_MOBILE ? 0.62 : 2.4,
-        IS_MOBILE ? 1.80 : 2.0,
-        IS_MOBILE ? 2.0  : 0.5
-      );
-
-      let discoBall  = null;
-      let discoWire  = null;
+      const discoBalls = [];   // array de { mesh, r, speed, rotSpeed, resetY }
       const discoSpots = [];
 
       try {
-        const DISCO_SEG_W = IS_MOBILE ? 24 : 32;
-        const DISCO_SEG_H = IS_MOBILE ? 14 : 18;
-        const discoGeo    = new THREE.SphereGeometry(BALL_R, DISCO_SEG_W, DISCO_SEG_H);
-
-        // Matcap 512px: fondo casi negro + focos muy nítidos.
-        // Caída rápida (sharp falloff) = espejo real: o refleja el foco (brillante) o no (oscuro).
         function buildMatcap() {
           const S = 512, h = S / 2;
           const cv = document.createElement('canvas');
@@ -2205,42 +2188,57 @@
           return new THREE.CanvasTexture(cv);
         }
 
-        const discoMat = new THREE.MeshMatcapMaterial({
-          matcap:      buildMatcap() || undefined,
-          flatShading: true,
-        });
+        const discoMatcapTex = buildMatcap();
+        const DISCO_SEG_W = IS_MOBILE ? 20 : 28;
+        const DISCO_SEG_H = IS_MOBILE ? 12 : 16;
 
-        discoBall = new THREE.Mesh(discoGeo, discoMat);
-        discoBall.position.copy(BALL_POS);
-        scene.add(discoBall);
+        // Definición de cada esfera: radio, x, z, y inicial (staggered), velocidad caída, vel rotación
+        const BALL_COUNT = IS_MOBILE ? 4 : 7;
+        const ballDefs = [];
+        const rng = (a, b) => a + Math.random() * (b - a);
+        for (let i = 0; i < BALL_COUNT; i++) {
+          ballDefs.push({
+            r:        rng(IS_MOBILE ? 0.13 : 0.16, IS_MOBILE ? 0.44 : 0.58),
+            x:        rng(-2.8, 2.8),
+            z:        rng(-0.5, 1.2),
+            yStart:   rng(2.0, 5.5),   // y de aparición (fuera de pantalla arriba)
+            speed:    rng(0.004, 0.016),
+            rotSpeed: rng(0.008, 0.028),
+            rotAxis:  new THREE.Vector3(rng(-0.3,0.3), 1, rng(-0.2,0.2)).normalize(),
+          });
+        }
 
-        // Juntas entre tiles: EdgesGeometry muy oscuro para simular
-        // las separaciones entre los espejos de una disco ball real
-        const edgesGeo = new THREE.EdgesGeometry(discoGeo);
-        const edgesMat = new THREE.LineBasicMaterial({ color: 0x111118, transparent: true, opacity: 0.55 });
-        const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
-        discoBall.add(edgesMesh); // hijo de discoBall → gira junto con ella
+        for (const def of ballDefs) {
+          const geo = new THREE.SphereGeometry(def.r, DISCO_SEG_W, DISCO_SEG_H);
+          const mat = new THREE.MeshMatcapMaterial({
+            matcap:      discoMatcapTex || undefined,
+            flatShading: true,
+          });
+          const mesh = new THREE.Mesh(geo, mat);
+          mesh.position.set(def.x, def.yStart, def.z);
+          scene.add(mesh);
 
-        // Hilo de suspension
-        const discoWireGeo = new THREE.CylinderGeometry(0.007, 0.007, 1.0, 5);
-        const discoWireMat = new THREE.MeshStandardMaterial({ color: 0xc0c0cc, metalness: 1.0, roughness: 0.1 });
-        discoWire = new THREE.Mesh(discoWireGeo, discoWireMat);
-        scene.add(discoWire);
+          // Líneas de juntas
+          const edgesMat = new THREE.LineBasicMaterial({ color: 0x111118, transparent: true, opacity: 0.50 });
+          const edgesMesh = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgesMat);
+          mesh.add(edgesMesh);
 
-        // SpotLights suaves que orbitan la bola — proyectan destellos sobre
-        // el glitter circundante. Intensidad baja para no saturar la bola.
+          discoBalls.push({ mesh, def, yStart: def.yStart });
+        }
+
+        // Un par de SpotLights globales que animan la escena
         const DISCO_SPOTS_N = IS_MOBILE ? 1 : 2;
         for (let i = 0; i < DISCO_SPOTS_N; i++) {
-          const sp = new THREE.SpotLight(0xeeeeff, IS_MOBILE ? 2 : 5, IS_MOBILE ? 6 : 12, Math.PI / 6, 0.5, 1.5);
+          const sp = new THREE.SpotLight(0xeeeeff, IS_MOBILE ? 2 : 4, IS_MOBILE ? 6 : 12, Math.PI / 6, 0.5, 1.5);
           sp.userData.phase = (i / DISCO_SPOTS_N) * Math.PI * 2;
-          sp.userData.speed = 0.18 + i * 0.12;
-          sp.target.position.copy(BALL_POS);
+          sp.userData.speed = 0.15 + i * 0.10;
+          sp.position.set(0, 3, 1);
           scene.add(sp);
           scene.add(sp.target);
           discoSpots.push(sp);
         }
       } catch (e) {
-        console.warn('Disco ball init failed:', e);
+        console.warn('Disco balls init failed:', e);
       }
 
       /* ============================================================
@@ -2481,37 +2479,32 @@
         }
         bokehInstanced.instanceMatrix.needsUpdate = true;
 
-        /* --- Update disco ball --- */
-        if (discoBall) {
-          discoBall.rotation.y += REDUCED_MOTION ? 0.0004 : 0.0022;
-          discoBall.rotation.x  = 0;
+        /* --- Update disco balls (caída) --- */
+        const FALL_BOTTOM = -3.2;
+        for (let bi = 0; bi < discoBalls.length; bi++) {
+          const b = discoBalls[bi];
+          const speed = REDUCED_MOTION ? b.def.speed * 0.25 : b.def.speed;
+          b.mesh.position.y -= speed;
+          b.mesh.rotateOnAxis(b.def.rotAxis, REDUCED_MOTION ? 0.0004 : b.def.rotSpeed);
 
-          const dSwing = Math.sin(elapsed * 0.38) * (REDUCED_MOTION ? 0.002 : 0.014);
-          discoBall.position.x = BALL_POS.x + dSwing * 1.5;
-          discoBall.position.y = BALL_POS.y + Math.sin(elapsed * 0.29) * (REDUCED_MOTION ? 0.001 : 0.008);
+          // Deriva horizontal suave
+          b.mesh.position.x += Math.sin(elapsed * 0.31 + bi * 1.7) * 0.0008;
 
-          if (discoWire) {
-            discoWire.position.set(
-              discoBall.position.x,
-              discoBall.position.y + BALL_R + 0.50,
-              discoBall.position.z
-            );
-            discoWire.rotation.z = dSwing * 1.4;
+          // Resetear al tope con nueva posición x aleatoria
+          if (b.mesh.position.y < FALL_BOTTOM) {
+            b.mesh.position.y = b.def.yStart + Math.random() * 1.5;
+            b.mesh.position.x = (Math.random() - 0.5) * 5.6;
           }
+        }
 
-          for (let i = 0; i < discoSpots.length; i++) {
-            const sp = discoSpots[i];
-            const t  = elapsed * sp.userData.speed + sp.userData.phase;
-            sp.position.set(
-              discoBall.position.x + Math.cos(t) * 3.2,
-              discoBall.position.y + 1.4 + Math.sin(t * 1.2) * 0.8,
-              discoBall.position.z + Math.sin(t) * 2.0
-            );
-            sp.target.position.copy(discoBall.position);
-            sp.target.updateMatrixWorld();
-            const baseI = IS_MOBILE ? 2 : 5;
-            sp.intensity = baseI * (0.72 + 0.28 * Math.sin(elapsed * 4.5 + i * 2.1));
-          }
+        for (let i = 0; i < discoSpots.length; i++) {
+          const sp = discoSpots[i];
+          const t  = elapsed * sp.userData.speed + sp.userData.phase;
+          sp.position.set(Math.cos(t) * 3.0, 2.5 + Math.sin(t * 0.7) * 0.6, Math.sin(t) * 2.0);
+          sp.target.position.set(0, 0, 0);
+          sp.target.updateMatrixWorld();
+          const baseI = IS_MOBILE ? 2 : 4;
+          sp.intensity = baseI * (0.72 + 0.28 * Math.sin(elapsed * 4.5 + i * 2.1));
         }
 
 
