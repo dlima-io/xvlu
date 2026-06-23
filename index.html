@@ -1146,34 +1146,49 @@
     <section class="inv-screen inv-screen-1" data-screen="0" aria-label="Portada">
 
       <!-- Destellos flotantes de la pantalla 1 -->
-      <svg class="inv-sparkle" style="top:7%;right:9%;width:24px;animation-delay:0s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spA)"/>
-        <path d="M20 7L21 19L33 20L21 21L20 33L19 21L7 20L19 19Z" fill="white" opacity="0.45"/>
-        <defs><radialGradient id="spA" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+      <svg class="inv-sparkle" style="top:7%;right:9%;width:24px;animation-delay:0s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spA)" />
+        <path d="M20 7L21 19L33 20L21 21L20 33L19 21L7 20L19 19Z" fill="white" opacity="0.45" />
+        <defs>
+          <radialGradient id="spA" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#c0c0d8" stop-opacity="0" />
+          </radialGradient>
+        </defs>
       </svg>
-      <svg class="inv-sparkle" style="top:11%;left:8%;width:14px;animation-delay:0.9s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.80"/>
+      <svg class="inv-sparkle" style="top:11%;left:8%;width:14px;animation-delay:0.9s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.80" />
       </svg>
-      <svg class="inv-sparkle" style="bottom:14%;left:7%;width:16px;animation-delay:1.8s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 2L21.4 18.6L38 20L21.4 21.4L20 38L18.6 21.4L2 20L18.6 18.6Z" fill="url(#spB)"/>
-        <defs><radialGradient id="spB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#b0b0cc" stop-opacity="0"/></radialGradient></defs>
+      <svg class="inv-sparkle" style="bottom:14%;left:7%;width:16px;animation-delay:1.8s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 2L21.4 18.6L38 20L21.4 21.4L20 38L18.6 21.4L2 20L18.6 18.6Z" fill="url(#spB)" />
+        <defs>
+          <radialGradient id="spB" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#b0b0cc" stop-opacity="0" />
+          </radialGradient>
+        </defs>
       </svg>
-      <svg class="inv-sparkle" style="bottom:10%;right:7%;width:11px;animation-delay:1.1s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.70"/>
+      <svg class="inv-sparkle" style="bottom:10%;right:7%;width:11px;animation-delay:1.1s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.70" />
       </svg>
 
       <div class="inv-panel">
 
+        <!-- Línea 2: "Lourdes" -->
+        <h1 class="inv-name inv-reveal-scale" data-delay="1">Lourdes</h1>
+
         <!-- Línea 1: "mis XV años" -->
-        <div class="inv-subtitle-block inv-reveal" data-delay="1">
+        <div class="inv-subtitle-block inv-reveal" data-delay="3">
           <div class="inv-xv-line">
-            <span class="inv-sus">mis</span>
             <span class="inv-age">XV</span>
-            <span class="inv-anos">años</span>
           </div>
         </div>
 
-        <div class="inv-divider inv-reveal" data-delay="2" aria-hidden="true">
+        <div class="inv-divider inv-reveal" data-delay="4" aria-hidden="true">
           <div class="inv-divider-line"></div>
           <div class="inv-divider-diamond-sm"></div>
           <div class="inv-divider-diamond"></div>
@@ -1181,8 +1196,39 @@
           <div class="inv-divider-line"></div>
         </div>
 
-        <!-- Línea 2: "Lourdes" -->
-        <h1 class="inv-name inv-reveal-scale" data-delay="3">Lourdes</h1>
+
+
+        <div class="inv-event-item inv-reveal" data-delay="4">
+          <!-- Icono calendario — SVG minimalista plateado -->
+          <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="22" height="20" rx="2" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" />
+            <path d="M3 10 H25" stroke="rgba(58,58,85,0.35)" stroke-width="1" />
+            <rect x="9" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)" />
+            <rect x="17" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)" />
+            <text x="14" y="22" text-anchor="middle" font-family="Cinzel,serif" font-size="7" fill="rgba(26,26,46,0.70)"
+              font-weight="400">15</text>
+          </svg>
+          <span class="inv-event-value">15.08.26</span>
+        </div>
+
+        <div class="inv-divider inv-reveal" data-delay="6" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+
+        <!-- Lugar -->
+        <div class="inv-event-item inv-reveal" data-delay="6">
+          <!-- Icono ubicacion -->
+          <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M14 3 C9.58 3 6 6.58 6 11 C6 16.5 14 25 14 25 C14 25 22 16.5 22 11 C22 6.58 18.42 3 14 3Z"
+              stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none" />
+            <circle cx="14" cy="11" r="3" stroke="rgba(58,58,85,0.45)" stroke-width="1.1" fill="none" />
+          </svg>
+          <span class="inv-event-value">Las Valkirias</span>
+        </div>
 
       </div>
 
@@ -1190,7 +1236,8 @@
       <div class="inv-scroll-hint" aria-hidden="true">
         <span>deslizar</span>
         <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
-          <path d="M7 1 L7 15 M3 11 L7 15 L11 11" stroke="rgba(192,192,210,0.50)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 1 L7 15 M3 11 L7 15 L11 11" stroke="rgba(192,192,210,0.50)" stroke-width="1.2"
+            stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
 
