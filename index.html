@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Lourdes - Quinceañera</title>
+  <title>XV - Lourdes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600&family=Meow+Script&family=Raleway:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600&family=Meow+Script&family=Raleway:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&display=swap"
+    rel="stylesheet" />
 
   <!--
   ============================================================
@@ -23,7 +26,9 @@
   -->
 
   <style>
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -34,6 +39,7 @@
       height: 100%;
       overflow: hidden;
     }
+
     body {
       width: 100%;
       height: 100%;
@@ -71,25 +77,37 @@
       inset: 0;
       z-index: -1;
       background:
-        radial-gradient(circle at 20% 50%, rgba(192,192,192,0.06) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(200,200,220,0.05) 0%, transparent 40%),
-        radial-gradient(circle at 60% 80%, rgba(176,196,222,0.04) 0%, transparent 45%);
+        radial-gradient(circle at 20% 50%, rgba(192, 192, 192, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(200, 200, 220, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(176, 196, 222, 0.04) 0%, transparent 45%);
       animation: fallbackPulse 6s ease-in-out infinite alternate;
     }
 
     @keyframes fallbackShimmer {
-      from { filter: brightness(1); }
-      to   { filter: brightness(1.15); }
+      from {
+        filter: brightness(1);
+      }
+
+      to {
+        filter: brightness(1.15);
+      }
     }
 
     @keyframes fallbackPulse {
-      from { opacity: 0.6; }
-      to   { opacity: 1; }
+      from {
+        opacity: 0.6;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     /* Reduccion de movimiento: respeta prefers-reduced-motion */
     @media (prefers-reduced-motion: reduce) {
-      body.no-webgl, body.no-webgl::before {
+
+      body.no-webgl,
+      body.no-webgl::before {
         animation: none;
       }
     }
@@ -108,7 +126,8 @@
       align-items: center;
       justify-content: center;
       padding: 2rem 1.5rem;
-      pointer-events: none; /* permite click-through excepto en hijos con pointer-events: auto */
+      pointer-events: none;
+      /* permite click-through excepto en hijos con pointer-events: auto */
     }
 
     /*
@@ -131,19 +150,19 @@
   ============================================================ -->
   <style>
     :root {
-      --white:               #ffffff;
-      --silver-light:        #f0f0f5;
-      --silver-mid:          #c8c8d8;
-      --silver-dark:         #c0c0cc;
-      --silver-accent:       #4a4a65;
-      --silver-bright:       #f4f4fa;
+      --white: #ffffff;
+      --silver-light: #f0f0f5;
+      --silver-mid: #c8c8d8;
+      --silver-dark: #c0c0cc;
+      --silver-accent: #4a4a65;
+      --silver-bright: #f4f4fa;
       --glass-border-bright: rgba(255, 255, 255, 0.28);
-      --shadow-deep:         rgba(10, 10, 20, 0.18);
-      --shadow-glow:         rgba(200, 200, 230, 0.10);
+      --shadow-deep: rgba(10, 10, 20, 0.18);
+      --shadow-glow: rgba(200, 200, 230, 0.10);
       /* Paleta de texto oscuro para fondo plateado claro */
-      --text-main:           #1a1a2e;
-      --text-mid:            #3a3a55;
-      --text-light:          #5a5a78;
+      --text-main: #1a1a2e;
+      --text-mid: #3a3a55;
+      --text-light: #5a5a78;
     }
 
     /* ============================================================
@@ -167,7 +186,8 @@
       /* scroll */
       overflow-y: scroll;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;   /* critico iOS */
+      -webkit-overflow-scrolling: touch;
+      /* critico iOS */
       scroll-snap-type: y mandatory;
       scrollbar-width: none;
       /* sobre el canvas */
@@ -186,10 +206,12 @@
     .inv-screen {
       position: relative;
       width: 100%;
-      height: 100vh;        /* fallback navegadores sin dvh */
+      height: 100vh;
+      /* fallback navegadores sin dvh */
       height: 100dvh;
       min-height: 100dvh;
-      flex-shrink: 0;       /* el flexbox NO comprime las pantallas */
+      flex-shrink: 0;
+      /* el flexbox NO comprime las pantallas */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -218,7 +240,7 @@
       border: 1px solid rgba(255, 255, 255, 0.50);
       border-radius: 20px;
       box-shadow:
-        0 2px 0 rgba(255,255,255,0.70) inset,
+        0 2px 0 rgba(255, 255, 255, 0.70) inset,
         0 12px 40px rgba(10, 10, 30, 0.12),
         0 4px 16px rgba(10, 10, 30, 0.08),
         0 0 60px rgba(180, 180, 210, 0.10);
@@ -229,18 +251,21 @@
     .inv-panel::before {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 60%; height: 45%;
-      background: radial-gradient(
-        ellipse at 15% 5%,
-        rgba(255,255,255,0.30) 0%,
-        transparent 70%
-      );
+      top: 0;
+      left: 0;
+      width: 60%;
+      height: 45%;
+      background: radial-gradient(ellipse at 15% 5%,
+          rgba(255, 255, 255, 0.30) 0%,
+          transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
-    .inv-panel > * { position: relative; z-index: 1; }
+    .inv-panel>* {
+      position: relative;
+      z-index: 1;
+    }
 
     /* Fallback sin backdrop-filter */
     @supports not (backdrop-filter: blur(1px)) {
@@ -265,27 +290,27 @@
     .inv-divider-line {
       flex: 1;
       height: 1px;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(90,90,120,0.15) 15%,
-        rgba(74,74,101,0.45) 50%,
-        rgba(90,90,120,0.15) 85%,
-        transparent 100%
-      );
+      background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(90, 90, 120, 0.15) 15%,
+          rgba(74, 74, 101, 0.45) 50%,
+          rgba(90, 90, 120, 0.15) 85%,
+          transparent 100%);
     }
 
     .inv-divider-diamond {
-      width: 5px; height: 5px;
+      width: 5px;
+      height: 5px;
       background: var(--text-mid);
       transform: rotate(45deg);
       flex-shrink: 0;
-      box-shadow: 0 0 5px rgba(58,58,85,0.40);
+      box-shadow: 0 0 5px rgba(58, 58, 85, 0.40);
     }
 
     .inv-divider-diamond-sm {
-      width: 3px; height: 3px;
-      background: rgba(90,90,120,0.55);
+      width: 3px;
+      height: 3px;
+      background: rgba(90, 90, 120, 0.55);
       transform: rotate(45deg);
       flex-shrink: 0;
     }
@@ -301,21 +326,43 @@
     }
 
     @keyframes sparkleAnim {
-      0%, 100% { opacity: 0;    transform: scale(0.25) rotate(0deg);   }
-      15%       { opacity: 0;    transform: scale(0.25) rotate(0deg);   }
-      42%       { opacity: 0.90; transform: scale(1.00) rotate(18deg);  }
-      62%       { opacity: 0.70; transform: scale(0.80) rotate(-6deg);  }
-      85%       { opacity: 0;    transform: scale(0.20) rotate(8deg);   }
+
+      0%,
+      100% {
+        opacity: 0;
+        transform: scale(0.25) rotate(0deg);
+      }
+
+      15% {
+        opacity: 0;
+        transform: scale(0.25) rotate(0deg);
+      }
+
+      42% {
+        opacity: 0.90;
+        transform: scale(1.00) rotate(18deg);
+      }
+
+      62% {
+        opacity: 0.70;
+        transform: scale(0.80) rotate(-6deg);
+      }
+
+      85% {
+        opacity: 0;
+        transform: scale(0.20) rotate(8deg);
+      }
     }
 
     /* ============================================================
        INDICADOR DE SCROLL — aparece en pantalla 1
     ============================================================ */
     .inv-scroll-hint {
-      position: absolute;
-      bottom: 2rem;
+      position: fixed;
+      bottom: 1.6rem;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 20;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -326,11 +373,11 @@
 
     .inv-scroll-hint span {
       font-family: 'Raleway', sans-serif;
-      font-weight: 400;
-      font-size: 0.60rem;
+      font-weight: 500;
+      font-size: 0.72rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(58,58,85,0.60);
+      color: rgba(58, 58, 85, 0.80);
     }
 
     .inv-scroll-hint svg {
@@ -338,12 +385,21 @@
     }
 
     @keyframes hintFadeIn {
-      to { opacity: 1; }
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes hintBounce {
-      0%, 100% { transform: translateY(0);   }
-      50%       { transform: translateY(5px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(5px);
+      }
     }
 
     /* ============================================================
@@ -362,17 +418,18 @@
     }
 
     .inv-dot {
-      width: 5px; height: 5px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      background: rgba(58,58,85,0.25);
-      border: 1px solid rgba(58,58,85,0.30);
+      background: rgba(58, 58, 85, 0.25);
+      border: 1px solid rgba(58, 58, 85, 0.30);
       transition: background 0.3s ease, transform 0.3s ease;
     }
 
     .inv-dot.active {
-      background: rgba(26,26,46,0.75);
+      background: rgba(26, 26, 46, 0.75);
       transform: scale(1.4);
-      box-shadow: 0 0 6px rgba(26,26,46,0.30);
+      box-shadow: 0 0 6px rgba(26, 26, 46, 0.30);
     }
 
     /* ============================================================
@@ -391,7 +448,7 @@
       text-transform: uppercase;
       color: var(--text-light);
       margin-bottom: 1rem;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.60);
     }
 
     /* Nombre: texto oscuro con franja de luz que barre de izquierda a derecha */
@@ -402,33 +459,36 @@
       line-height: 1.08;
       letter-spacing: 0.18em;
       text-align: center;
-      background: linear-gradient(
-        105deg,
-        #1a1a2e 0%,
-        #1a1a2e 15%,
-        #2a2a42 32%,
-        #8888aa 46%,
-        #ffffff 50%,
-        #8888aa 54%,
-        #2a2a42 68%,
-        #1a1a2e 85%,
-        #1a1a2e 100%
-      );
+      background: linear-gradient(105deg,
+          #1a1a2e 0%,
+          #1a1a2e 15%,
+          #2a2a42 32%,
+          #8888aa 46%,
+          #ffffff 50%,
+          #8888aa 54%,
+          #2a2a42 68%,
+          #1a1a2e 85%,
+          #1a1a2e 100%);
       background-size: 300% 100%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       color: transparent;
       animation: metalSweep 5s linear infinite;
-      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
       will-change: background-position;
     }
 
     /* Con background-size:300%, posición 0% muestra el primer 33% del gradiente (oscuro)
        y posición 100% muestra el último 33% (también oscuro). El salto del loop es invisible. */
     @keyframes metalSweep {
-      from { background-position: 100% center; }
-      to   { background-position: 0% center; }
+      from {
+        background-position: 100% center;
+      }
+
+      to {
+        background-position: 0% center;
+      }
     }
 
     .inv-subtitle-block {
@@ -452,7 +512,7 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-mid);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.60);
     }
 
     /* XV: mismo efecto de barrido metálico, delay para desfasar de Lourdes */
@@ -462,26 +522,25 @@
       font-size: clamp(3.8rem, 16vw, 5rem);
       line-height: 0.9;
       letter-spacing: 0.04em;
-      background: linear-gradient(
-        105deg,
-        #1a1a2e 0%,
-        #1a1a2e 15%,
-        #2a2a42 32%,
-        #9999bb 46%,
-        #ffffff 50%,
-        #9999bb 54%,
-        #2a2a42 68%,
-        #1a1a2e 85%,
-        #1a1a2e 100%
-      );
+      background: linear-gradient(105deg,
+          #1a1a2e 0%,
+          #1a1a2e 15%,
+          #2a2a42 32%,
+          #9999bb 46%,
+          #ffffff 50%,
+          #9999bb 54%,
+          #2a2a42 68%,
+          #1a1a2e 85%,
+          #1a1a2e 100%);
       background-size: 300% 100%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       color: transparent;
       animation: metalSweep 5s linear infinite;
-      animation-delay: -2s; /* desfase sin pausa inicial */
-      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+      animation-delay: -2s;
+      /* desfase sin pausa inicial */
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
     }
 
     .inv-anos {
@@ -491,7 +550,7 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-mid);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.60);
     }
 
     /* ============================================================
@@ -510,7 +569,7 @@
       text-transform: uppercase;
       color: var(--text-light);
       text-align: center;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.60);
       margin-bottom: 1.8rem;
     }
 
@@ -532,10 +591,11 @@
 
     /* Icono SVG minimalista — tono oscuro sobre panel claro */
     .inv-event-icon {
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       margin-bottom: 0.2rem;
       opacity: 0.65;
-      filter: drop-shadow(0 1px 1px rgba(255,255,255,0.50));
+      filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.50));
     }
 
     .inv-event-label {
@@ -545,7 +605,7 @@
       letter-spacing: 0.20em;
       text-transform: uppercase;
       color: var(--text-light);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.60);
     }
 
     .inv-event-value {
@@ -555,7 +615,7 @@
       color: var(--text-main);
       letter-spacing: 0.05em;
       line-height: 1.45;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.80), 0 0 20px rgba(255,255,255,0.30);
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.80), 0 0 20px rgba(255, 255, 255, 0.30);
     }
 
     .inv-event-value em {
@@ -574,18 +634,18 @@
       align-items: center;
     }
 
-    .inv-event-row .inv-event-item { padding: 0 0.5rem; }
+    .inv-event-row .inv-event-item {
+      padding: 0 0.5rem;
+    }
 
     .inv-event-row-sep {
       width: 1px;
       height: 3rem;
-      background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(74,74,101,0.30) 25%,
-        rgba(74,74,101,0.30) 75%,
-        transparent
-      );
+      background: linear-gradient(to bottom,
+          transparent,
+          rgba(74, 74, 101, 0.30) 25%,
+          rgba(74, 74, 101, 0.30) 75%,
+          transparent);
     }
 
     /* ============================================================
@@ -604,14 +664,14 @@
       color: var(--text-light);
       text-align: center;
       margin-bottom: 1.6rem;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.60);
     }
 
     .inv-message {
       position: relative;
       padding: 1.75rem 1.25rem;
-      background: rgba(255,255,255,0.20);
-      border: 1px solid rgba(74,74,101,0.15);
+      background: rgba(255, 255, 255, 0.20);
+      border: 1px solid rgba(74, 74, 101, 0.15);
       border-radius: 12px;
       text-align: center;
     }
@@ -623,11 +683,21 @@
       font-family: 'Cinzel', serif;
       font-size: 5rem;
       line-height: 1;
-      color: rgba(58,58,85,0.14);
+      color: rgba(58, 58, 85, 0.14);
       pointer-events: none;
     }
-    .inv-message::before { content: '\201C'; top: -0.6rem;  left:  0.4rem; }
-    .inv-message::after  { content: '\201D'; bottom: -2.2rem; right: 0.4rem; }
+
+    .inv-message::before {
+      content: '\201C';
+      top: -0.6rem;
+      left: 0.4rem;
+    }
+
+    .inv-message::after {
+      content: '\201D';
+      bottom: -2.2rem;
+      right: 0.4rem;
+    }
 
     .inv-message p {
       font-family: 'Raleway', sans-serif;
@@ -636,7 +706,7 @@
       font-size: clamp(0.90rem, 3.6vw, 1.05rem);
       line-height: 1.85;
       color: var(--text-mid);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.70);
       letter-spacing: 0.02em;
     }
 
@@ -648,149 +718,361 @@
       color: var(--text-main);
       text-align: center;
       margin-top: 1.75rem;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.70);
     }
 
     /* ============================================================
        PANTALLA 4 — RSVP
     ============================================================ */
-    .inv-screen-4 .inv-panel {
+    .inv-screen-4 .inv-panel,
+    .inv-screen-5 .inv-panel,
+    .inv-screen-6 .inv-panel,
+    .inv-screen-7 .inv-panel,
+    .inv-screen-8 .inv-panel {
       padding: 3rem 2rem 3rem;
       gap: 0;
     }
 
-    .inv-rsvp-title {
+    /* ============================================================
+       PANTALLA 7 — REGALO
+    ============================================================ */
+    .inv-regalo-title {
       font-family: 'Cinzel', serif;
       font-weight: 400;
-      font-size: 0.78rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--text-light);
+      font-size: clamp(1.3rem, 5vw, 1.6rem);
+      letter-spacing: 0.18em;
+      color: var(--text-main);
+      margin: 0.8rem 0 0.6rem;
       text-align: center;
-      margin-bottom: 1.6rem;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
     }
 
-    .inv-rsvp-text {
+    .inv-regalo-text {
       font-family: 'Raleway', sans-serif;
-      font-weight: 400;
-      font-size: clamp(0.85rem, 3.5vw, 1rem);
-      letter-spacing: 0.04em;
-      line-height: 1.7;
-      text-align: center;
+      font-size: clamp(0.78rem, 3vw, 0.88rem);
       color: var(--text-mid);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
-      margin-bottom: 1.75rem;
+      text-align: center;
+      line-height: 1.65;
+      margin: 0 0 1.1rem;
+      padding: 0 0.5rem;
     }
 
-    .inv-rsvp-deadline {
-      display: block;
-      font-family: 'Cinzel', serif;
-      font-weight: 400;
-      font-size: 0.78em;
-      letter-spacing: 0.08em;
-      color: var(--text-light);
-      margin-top: 0.35rem;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
-    }
-
-    /* Boton RSVP — plateado puro, sin dorado */
-    .inv-rsvp-btn {
-      pointer-events: auto;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.92rem 2.5rem;
-      font-family: 'Raleway', sans-serif;
-      font-weight: 500;
-      font-size: 0.68rem;
-      letter-spacing: 0.30em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: #12121e;
-      background: linear-gradient(
-        135deg,
-        #c0c0cc 0%,
-        #e0e0ee 22%,
-        #f8f8ff 40%,
-        #ffffff 50%,
-        #e8e8f4 62%,
-        #c8c8dc 80%,
-        #b8b8cc 100%
-      );
-      background-size: 220% auto;
-      border: none;
-      border-radius: 1px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: background-position 0.45s ease, transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow:
-        0 4px 22px rgba(180,180,210,0.40),
-        0 1px 0 rgba(255,255,255,0.55) inset,
-        0 -1px 0 rgba(0,0,0,0.15) inset;
-      will-change: transform;
-      margin-bottom: 0.25rem;
-    }
-
-    .inv-rsvp-btn:hover {
-      background-position: right center;
-      transform: translateY(-2px);
-      box-shadow:
-        0 8px 32px rgba(200,200,230,0.55),
-        0 1px 0 rgba(255,255,255,0.65) inset,
-        0 -1px 0 rgba(0,0,0,0.15) inset;
-    }
-
-    .inv-rsvp-btn:active { transform: translateY(0); }
-
-    /* Shimmer plateado sobre el boton */
-    .inv-rsvp-btn::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255,255,255,0.45) 50%,
-        transparent 100%
-      );
-      animation: btnShimmer 3.5s ease-in-out infinite;
-    }
-
-    @keyframes btnShimmer {
-      0%   { left: -100%; }
-      40%  { left:  100%; }
-      100% { left:  100%; }
-    }
-
-    /* Separador linea + contacto */
-    .inv-contact-block {
+    .inv-alias-box {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
-      margin-top: 1.6rem;
+      gap: 0.25rem;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(180, 180, 210, 0.35);
+      border-radius: 10px;
+      padding: 0.7rem 1.6rem;
+      margin-bottom: 0.85rem;
     }
 
-    .inv-contact-label {
+    .inv-alias-label {
       font-family: 'Raleway', sans-serif;
-      font-size: 0.62rem;
-      font-weight: 400;
-      letter-spacing: 0.22em;
+      font-size: 0.60rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-light);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.60);
+      color: var(--text-sub);
     }
 
-    .inv-contact-number {
-      font-family: 'Cinzel', serif;
-      font-weight: 400;
-      font-size: clamp(0.85rem, 3.4vw, 1rem);
-      color: var(--text-mid);
+    .inv-alias-value {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+      letter-spacing: 0.06em;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .inv-alias-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
       letter-spacing: 0.10em;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      text-transform: uppercase;
+      color: var(--text-mid);
+      background: transparent;
+      border: 1px solid rgba(100, 100, 140, 0.30);
+      border-radius: 6px;
+      padding: 0.5rem 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      margin-bottom: 0.8rem;
+    }
+
+    .inv-alias-copy:hover {
+      background: rgba(255, 255, 255, 0.55);
+      border-color: rgba(100, 100, 140, 0.55);
+    }
+
+    .inv-alias-copy.copied {
+      color: #3a7a4a;
+      border-color: rgba(58, 122, 74, 0.45);
+    }
+
+    /* ============================================================
+       DRESSCODE (pantalla 6)
+    ============================================================ */
+    .inv-dresscode-icon {
+      opacity: 0.55;
+      margin-bottom: 0.1rem;
+    }
+
+    .inv-dresscode-label {
+      font-family: 'Cinzel', serif;
+      font-size: 1.55rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      color: var(--text-main);
+      margin: 0;
+      text-align: center;
+    }
+
+    .inv-dresscode-sub {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      text-align: center;
+      margin: 0;
+    }
+
+    .inv-dresscode-avoid {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.70rem;
+      color: var(--text-sub);
+      text-align: center;
+      margin: 0;
+      letter-spacing: 0.04em;
+    }
+
+    .inv-dresscode-rules {
+      display: flex;
+      justify-content: center;
+      gap: 2.2rem;
+      margin-top: 0.1rem;
+    }
+
+    .inv-dc-rule {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .inv-dc-reserve {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0 0.5rem;
+      text-align: center;
+    }
+
+    .inv-dc-reserve-colors {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.05rem, 4vw, 1.25rem);
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .inv-dc-reserve-text {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      font-style: italic;
+      color: var(--text-sub);
+      letter-spacing: 0.06em;
+      margin: 0;
+    }
+
+    /* ============================================================
+       PANTALLA 8 — RSVP FORMULARIO
+    ============================================================ */
+    .inv-screen-8 .inv-panel {
+      overflow-y: auto;
+      max-height: calc(100dvh - 3rem);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .inv-rsvp-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.8rem 0 0.4rem;
+      width: 100%;
+    }
+
+    .inv-ticket-svg { width: 100px; height: 57px; }
+
+    .inv-rsvp-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.75rem, 3vw, 0.90rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--text-main);
+      text-align: center;
+      margin: 0;
+    }
+
+    .inv-rsvp-deadline {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.70rem;
+      font-style: italic;
+      color: var(--text-sub);
+      text-align: center;
+      margin: 0.2rem 0 0;
+      letter-spacing: 0.03em;
+    }
+
+    .inv-rsvp-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 0.4rem 0 0;
+    }
+
+    .inv-rsvp-guest {
+      display: flex;
+      flex-direction: column;
+      gap: 0.50rem;
+      padding: 0.9rem 0;
+      border-top: 1px solid rgba(100,100,140,0.12);
+    }
+
+    .inv-rsvp-guest:first-child { border-top: none; }
+
+    .inv-rsvp-guest-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      margin: 0 0 0.15rem;
+    }
+
+    .inv-rsvp-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.40);
+      border: 1px solid rgba(100,100,140,0.25);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.84rem;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .inv-rsvp-input::placeholder { color: var(--text-sub); font-size: 0.78rem; }
+    .inv-rsvp-input:focus {
+      border-color: rgba(100,100,160,0.50);
+      background: rgba(255,255,255,0.60);
+    }
+
+    .inv-rsvp-menu-label {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      margin: 0.1rem 0 0;
+    }
+    .inv-rsvp-radio-group { display: flex; gap: 0.6rem; }
+
+    .inv-rsvp-radio {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex: 1;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(100,100,140,0.22);
+      border-radius: 8px;
+      padding: 0.48rem 0.65rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .inv-rsvp-radio:has(input:checked) {
+      background: rgba(255,255,255,0.65);
+      border-color: rgba(80,80,140,0.45);
+    }
+
+    .inv-rsvp-radio input[type="radio"] {
+      accent-color: rgba(80,80,140,0.80);
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .inv-rsvp-radio span {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.80rem;
+      color: var(--text-mid);
+    }
+
+    .inv-rsvp-error {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.74rem;
+      color: rgba(160,40,40,0.85);
+      text-align: center;
+      margin: 0.2rem 0 0;
+    }
+
+    .inv-rsvp-submit {
+      width: 100%;
+      background: rgba(42,42,68,0.78);
+      color: rgba(255,255,255,0.92);
+      border: none;
+      border-radius: 10px;
+      padding: 0.78rem 1rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      margin-top: 0.8rem;
+    }
+
+    .inv-rsvp-submit:hover  { background: rgba(42,42,68,0.92); }
+    .inv-rsvp-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    [hidden] { display: none !important; }
+
+    .inv-rsvp-success {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 2rem 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    .inv-rsvp-success-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.3rem, 5vw, 1.6rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .inv-rsvp-success-text {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      margin: 0;
     }
 
     /* ============================================================
@@ -802,14 +1084,14 @@
       opacity: 0;
       transform: translateY(22px);
       transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
-                  transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+        transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
     .inv-reveal-scale {
       opacity: 0;
       transform: translateY(10px) scale(0.94);
       transition: opacity 0.85s cubic-bezier(0.22, 0.61, 0.36, 1),
-                  transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+        transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
     /* Estado visible: activado por JS con clase .is-visible */
@@ -820,17 +1102,49 @@
     }
 
     /* Delays escalonados para los hijos */
-    .inv-reveal[data-delay="1"] { transition-delay: 0.10s; }
-    .inv-reveal[data-delay="2"] { transition-delay: 0.28s; }
-    .inv-reveal[data-delay="3"] { transition-delay: 0.46s; }
-    .inv-reveal[data-delay="4"] { transition-delay: 0.64s; }
-    .inv-reveal[data-delay="5"] { transition-delay: 0.82s; }
-    .inv-reveal[data-delay="6"] { transition-delay: 1.00s; }
-    .inv-reveal-scale[data-delay="1"] { transition-delay: 0.18s; }
-    .inv-reveal-scale[data-delay="2"] { transition-delay: 0.36s; }
-    .inv-reveal-scale[data-delay="3"] { transition-delay: 0.54s; }
-    .inv-reveal-scale[data-delay="4"] { transition-delay: 0.72s; }
-    .inv-reveal-scale[data-delay="5"] { transition-delay: 0.90s; }
+    .inv-reveal[data-delay="1"] {
+      transition-delay: 0.10s;
+    }
+
+    .inv-reveal[data-delay="2"] {
+      transition-delay: 0.28s;
+    }
+
+    .inv-reveal[data-delay="3"] {
+      transition-delay: 0.46s;
+    }
+
+    .inv-reveal[data-delay="4"] {
+      transition-delay: 0.64s;
+    }
+
+    .inv-reveal[data-delay="5"] {
+      transition-delay: 0.82s;
+    }
+
+    .inv-reveal[data-delay="6"] {
+      transition-delay: 1.00s;
+    }
+
+    .inv-reveal-scale[data-delay="1"] {
+      transition-delay: 0.18s;
+    }
+
+    .inv-reveal-scale[data-delay="2"] {
+      transition-delay: 0.36s;
+    }
+
+    .inv-reveal-scale[data-delay="3"] {
+      transition-delay: 0.54s;
+    }
+
+    .inv-reveal-scale[data-delay="4"] {
+      transition-delay: 0.72s;
+    }
+
+    .inv-reveal-scale[data-delay="5"] {
+      transition-delay: 0.90s;
+    }
 
     /* ============================================================
        CUENTA REGRESIVA
@@ -841,8 +1155,8 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.9rem 1.2rem 0.8rem;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       border-radius: 14px;
       width: 100%;
       margin-bottom: 0.4rem;
@@ -930,8 +1244,8 @@
       text-transform: uppercase;
       text-decoration: none;
       color: var(--text-main);
-      background: rgba(255,255,255,0.35);
-      border: 1px solid rgba(255,255,255,0.55);
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.55);
       border-radius: 10px;
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
@@ -940,35 +1254,85 @@
 
     .inv-action-btn:active {
       transform: scale(0.97);
-      background: rgba(255,255,255,0.5);
+      background: rgba(255, 255, 255, 0.5);
     }
 
     /* ============================================================
        RESPONSIVE DESKTOP
     ============================================================ */
     @media (min-width: 640px) {
-      .inv-panel { max-width: 500px; }
-      .inv-screen-1 .inv-panel { padding: 4rem 3rem 3.5rem; }
-      .inv-screen-2 .inv-panel { padding: 3rem 3rem 3rem; }
-      .inv-screen-3 .inv-panel { padding: 3.5rem 3rem 3.5rem; }
-      .inv-screen-4 .inv-panel { padding: 3.5rem 3rem 3.5rem; }
-      .inv-dots { right: 1.75rem; }
+      .inv-panel {
+        max-width: 500px;
+      }
+
+      .inv-screen-1 .inv-panel {
+        padding: 4rem 3rem 3.5rem;
+      }
+
+      .inv-screen-2 .inv-panel {
+        padding: 3rem 3rem 3rem;
+      }
+
+      .inv-screen-3 .inv-panel {
+        padding: 3.5rem 3rem 3.5rem;
+      }
+
+      .inv-screen-4 .inv-panel,
+      .inv-screen-5 .inv-panel,
+      .inv-screen-6 .inv-panel,
+      .inv-screen-7 .inv-panel,
+      .inv-screen-8 .inv-panel {
+        padding: 3.5rem 3rem 3.5rem;
+      }
+
+      .inv-dots {
+        right: 1.75rem;
+      }
+
+      .inv-dresscode-label {
+        font-size: 1.75rem;
+      }
+
+      .inv-dc-reserve-colors {
+        font-size: 1.3rem;
+      }
     }
 
     /* ============================================================
        PREFERS-REDUCED-MOTION
     ============================================================ */
     @media (prefers-reduced-motion: reduce) {
-      .inv-reveal, .inv-reveal-scale {
+
+      .inv-reveal,
+      .inv-reveal-scale {
         transition: none !important;
         opacity: 1;
         transform: none;
       }
-      .inv-sparkle         { animation: none; opacity: 0.50; }
-      .inv-name, .inv-age  { animation: none; background-position: 0% center; }
-      .inv-rsvp-btn::after { animation: none; }
-      .inv-scroll-hint     { animation: none; opacity: 1; }
-      .inv-scroll-hint svg { animation: none; }
+
+      .inv-sparkle {
+        animation: none;
+        opacity: 0.50;
+      }
+
+      .inv-name,
+      .inv-age {
+        animation: none;
+        background-position: 0% center;
+      }
+
+      .inv-rsvp-btn::after {
+        animation: none;
+      }
+
+      .inv-scroll-hint {
+        animation: none;
+        opacity: 1;
+      }
+
+      .inv-scroll-hint svg {
+        animation: none;
+      }
     }
   </style>
 
@@ -991,7 +1355,7 @@
       color: var(--text-mid);
       letter-spacing: 0.02em;
       padding: 0 0.4rem;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.70);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.70);
       margin-bottom: 0.2rem;
     }
 
@@ -1014,25 +1378,30 @@
       aspect-ratio: 4 / 5;
       left: 50%;
       top: 0;
-      transform: translateX(-50%); /* base; JS agrega el resto */
+      transform: translateX(-50%);
+      /* base; JS agrega el resto */
       border-radius: 14px;
       overflow: hidden;
       box-shadow:
-        0 10px 36px rgba(10,10,20,0.22),
-        0 2px 8px   rgba(10,10,20,0.12),
-        0 0 0 1px   rgba(255,255,255,0.40) inset;
+        0 10px 36px rgba(10, 10, 20, 0.22),
+        0 2px 8px rgba(10, 10, 20, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.40) inset;
       cursor: grab;
-      touch-action: none; /* JS maneja el drag en todas las direcciones */
+      touch-action: none;
+      /* JS maneja el drag en todas las direcciones */
       will-change: transform, opacity;
-      background: rgba(190,190,210,0.28);
+      background: rgba(190, 190, 210, 0.28);
     }
 
-    .inv-card:active { cursor: grabbing; }
+    .inv-card:active {
+      cursor: grabbing;
+    }
 
     .inv-card img {
       position: absolute;
       inset: 0;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       object-position: center top;
       display: block;
@@ -1051,17 +1420,15 @@
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      background: linear-gradient(
-        145deg,
-        rgba(215,215,228,0.60) 0%,
-        rgba(198,198,218,0.45) 100%
-      );
+      background: linear-gradient(145deg,
+          rgba(215, 215, 228, 0.60) 0%,
+          rgba(198, 198, 218, 0.45) 100%);
     }
 
     .inv-card-placeholder span {
       font-family: 'Cinzel', serif;
       font-size: 2.2rem;
-      color: rgba(58,58,85,0.25);
+      color: rgba(58, 58, 85, 0.25);
       letter-spacing: 0.1em;
     }
 
@@ -1070,7 +1437,7 @@
       font-size: 0.58rem;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: rgba(58,58,85,0.38);
+      color: rgba(58, 58, 85, 0.38);
     }
 
     /* Contador "1 / 4" */
@@ -1079,7 +1446,7 @@
       font-size: 0.58rem;
       font-weight: 500;
       letter-spacing: 0.22em;
-      color: rgba(58,58,85,0.45);
+      color: rgba(58, 58, 85, 0.45);
       text-align: center;
       margin-bottom: 0.1rem;
     }
@@ -1095,16 +1462,27 @@
       font-weight: 400;
       letter-spacing: 0.20em;
       text-transform: uppercase;
-      color: rgba(58,58,85,0.42);
+      color: rgba(58, 58, 85, 0.42);
       margin-top: 0.3rem;
     }
 
-    .inv-card-hint svg { flex-shrink: 0; color: rgba(58,58,85,0.50); }
+    .inv-card-hint svg {
+      flex-shrink: 0;
+      color: rgba(58, 58, 85, 0.50);
+    }
 
     @media (min-width: 640px) {
-      .inv-panel-foto  { padding: 2rem 1rem 1.8rem; }
-      .inv-card-stack  { height: 430px; }
-      .inv-card        { width: 310px; }
+      .inv-panel-foto {
+        padding: 2rem 1rem 1.8rem;
+      }
+
+      .inv-card-stack {
+        height: 430px;
+      }
+
+      .inv-card {
+        width: 310px;
+      }
     }
   </style>
 
@@ -1121,6 +1499,7 @@
   }
   </script>
 </head>
+
 <body>
 
   <canvas id="bg-canvas"></canvas>
@@ -1129,13 +1508,24 @@
     .invitation-content es el contenedor donde va el contenido real de la invitacion.
     Agrega aqui titulos, nombres, fecha, hora, lugar, RSVP, etc.
   -->
+  <!-- Indicador de scroll global -->
+  <div class="inv-scroll-hint" id="scroll-hint" aria-hidden="true">
+    <span>deslizar</span>
+    <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
+      <path d="M7 1 L7 15 M3 11 L7 15 L11 11" stroke="rgba(58,58,85,0.55)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
   <!-- Puntos de navegacion (indicador de pantalla activa) -->
   <nav class="inv-dots" aria-label="Navegación de secciones" aria-hidden="true">
     <div class="inv-dot active" data-screen="0"></div>
-    <div class="inv-dot"        data-screen="1"></div>
-    <div class="inv-dot"        data-screen="2"></div>
-    <div class="inv-dot"        data-screen="3"></div>
-    <div class="inv-dot"        data-screen="4"></div>
+    <div class="inv-dot" data-screen="1"></div>
+    <div class="inv-dot" data-screen="2"></div>
+    <div class="inv-dot" data-screen="3"></div>
+    <div class="inv-dot" data-screen="4"></div>
+    <div class="inv-dot" data-screen="5"></div>
+    <div class="inv-dot" data-screen="6"></div>
+    <div class="inv-dot" data-screen="7"></div>
   </nav>
 
   <div class="invitation-content" id="inv-scroll-container">
@@ -1178,89 +1568,14 @@
 
       <div class="inv-panel">
 
-        <!-- Línea 2: "Lourdes" -->
-        <h1 class="inv-name inv-reveal-scale" data-delay="1">Lourdes</h1>
-
         <!-- Línea 1: "mis XV años" -->
-        <div class="inv-subtitle-block inv-reveal" data-delay="3">
+        <div class="inv-subtitle-block inv-reveal" data-delay="1">
           <div class="inv-xv-line">
+            <span class="inv-sus">mis</span>
             <span class="inv-age">XV</span>
+            <span class="inv-anos">años</span>
           </div>
         </div>
-
-        <div class="inv-divider inv-reveal" data-delay="4" aria-hidden="true">
-          <div class="inv-divider-line"></div>
-          <div class="inv-divider-diamond-sm"></div>
-          <div class="inv-divider-diamond"></div>
-          <div class="inv-divider-diamond-sm"></div>
-          <div class="inv-divider-line"></div>
-        </div>
-
-
-
-        <div class="inv-event-item inv-reveal" data-delay="4">
-          <!-- Icono calendario — SVG minimalista plateado -->
-          <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <rect x="3" y="5" width="22" height="20" rx="2" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" />
-            <path d="M3 10 H25" stroke="rgba(58,58,85,0.35)" stroke-width="1" />
-            <rect x="9" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)" />
-            <rect x="17" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)" />
-            <text x="14" y="22" text-anchor="middle" font-family="Cinzel,serif" font-size="7" fill="rgba(26,26,46,0.70)"
-              font-weight="400">15</text>
-          </svg>
-          <span class="inv-event-value">15.08.26</span>
-        </div>
-
-        <div class="inv-divider inv-reveal" data-delay="6" aria-hidden="true">
-          <div class="inv-divider-line"></div>
-          <div class="inv-divider-diamond-sm"></div>
-          <div class="inv-divider-diamond"></div>
-          <div class="inv-divider-diamond-sm"></div>
-          <div class="inv-divider-line"></div>
-        </div>
-
-        <!-- Lugar -->
-        <div class="inv-event-item inv-reveal" data-delay="6">
-          <!-- Icono ubicacion -->
-          <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <path d="M14 3 C9.58 3 6 6.58 6 11 C6 16.5 14 25 14 25 C14 25 22 16.5 22 11 C22 6.58 18.42 3 14 3Z"
-              stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none" />
-            <circle cx="14" cy="11" r="3" stroke="rgba(58,58,85,0.45)" stroke-width="1.1" fill="none" />
-          </svg>
-          <span class="inv-event-value">Las Valkirias</span>
-        </div>
-
-      </div>
-
-      <!-- Indicador de scroll -->
-      <div class="inv-scroll-hint" aria-hidden="true">
-        <span>deslizar</span>
-        <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
-          <path d="M7 1 L7 15 M3 11 L7 15 L11 11" stroke="rgba(192,192,210,0.50)" stroke-width="1.2"
-            stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </div>
-
-    </section>
-
-    <!-- ================================================================
-         PANTALLA 2 — FOTOS
-    ================================================================ -->
-    <section class="inv-screen inv-screen-foto" data-screen="1" aria-label="Galería de fotos">
-
-      <svg class="inv-sparkle" style="top:9%;right:7%;width:17px;animation-delay:0.4s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75"/>
-      </svg>
-      <svg class="inv-sparkle" style="bottom:11%;left:8%;width:13px;animation-delay:1.7s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spFoto)"/>
-        <defs><radialGradient id="spFoto" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
-      </svg>
-
-      <div class="inv-panel inv-panel-foto">
-
-        <p class="inv-photo-phrase inv-reveal" data-delay="1">
-          "Cada foto guarda un pedacito<br>de quien sos hoy"
-        </p>
 
         <div class="inv-divider inv-reveal" data-delay="2" aria-hidden="true">
           <div class="inv-divider-line"></div>
@@ -1270,10 +1585,85 @@
           <div class="inv-divider-line"></div>
         </div>
 
+        <!-- Línea 2: "Lourdes" -->
+        <h1 class="inv-name inv-reveal-scale" data-delay="3">Lourdes</h1>
+
+      </div>
+
+    </section>
+
+    <!-- ================================================================
+         PANTALLA 2 — MENSAJE DE BIENVENIDA
+    ================================================================ -->
+    <section class="inv-screen inv-screen-2" data-screen="1" aria-label="Mensaje">
+
+      <svg class="inv-sparkle" style="top:9%;left:8%;width:20px;animation-delay:0.6s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spD)" />
+        <defs>
+          <radialGradient id="spD" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#b8b8d0" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:11%;right:8%;width:13px;animation-delay:1.6s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.72" />
+      </svg>
+
+      <div class="inv-panel">
+
+        <div class="inv-message inv-reveal" data-delay="2">
+          <p>
+            Es con el corazón lleno de alegría<br>
+            que te invitamos a compartir<br>
+            este momento tan especial.<br><br>
+            Tu presencia hará de esta noche<br>
+            un recuerdo que guardaremos<br>
+            para siempre.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================================================================
+         PANTALLA 3 — FOTOS
+    ================================================================ -->
+    <section class="inv-screen inv-screen-foto" data-screen="2" aria-label="Galería de fotos">
+
+      <svg class="inv-sparkle" style="top:9%;right:7%;width:17px;animation-delay:0.4s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75" />
+      </svg>
+      <svg class="inv-sparkle" style="bottom:11%;left:8%;width:13px;animation-delay:1.7s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spFoto)" />
+        <defs>
+          <radialGradient id="spFoto" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#c0c0d8" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+
+      <div class="inv-panel inv-panel-foto">
+
         <!-- Carrusel apilado: deslizá izq/der para pasar fotos         -->
         <!-- ⚠ Reemplazá foto1.jpg … foto4.jpg con tus archivos reales -->
         <div class="inv-card-stack" id="inv-card-stack">
           <!-- DOM de fondo a frente: data-card="3" primero, data-card="0" último (encima) -->
+          <div class="inv-card" data-card="5">
+            <div class="inv-card-placeholder"><span>6</span><small>foto</small></div>
+            <img src="foto6.jpg" alt="Foto 6" draggable="false">
+          </div>
+          <div class="inv-card" data-card="4">
+            <div class="inv-card-placeholder"><span>5</span><small>foto</small></div>
+            <img src="foto5.jpg" alt="Foto 5" draggable="false">
+          </div>
           <div class="inv-card" data-card="3">
             <div class="inv-card-placeholder"><span>4</span><small>foto</small></div>
             <img src="foto4.jpg" alt="Foto 4" draggable="false">
@@ -1292,12 +1682,10 @@
           </div>
         </div>
 
-        <p class="inv-card-counter" id="inv-card-counter">1 / 4</p>
+        <p class="inv-card-counter" id="inv-card-counter">1 / 6</p>
 
         <div class="inv-card-hint inv-reveal" data-delay="4">
-          <svg width="14" height="10" viewBox="0 0 20 14" fill="none" aria-hidden="true"><path d="M1 7H19M1 7L6 2M1 7L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>deslizá</span>
-          <svg width="14" height="10" viewBox="0 0 20 14" fill="none" aria-hidden="true"><path d="M19 7H1M19 7L14 2M19 7L14 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
       </div>
@@ -1305,33 +1693,46 @@
     </section>
 
     <!-- ================================================================
-         PANTALLA 3 — DETALLES DEL EVENTO
+         PANTALLA 4 — CUENTA REGRESIVA + FECHA + HORA
     ================================================================ -->
-    <section class="inv-screen inv-screen-2" data-screen="2" aria-label="Detalles del evento">
+    <section class="inv-screen inv-screen-4" data-screen="3" aria-label="Fecha y hora del evento">
 
-      <svg class="inv-sparkle" style="top:8%;right:8%;width:16px;animation-delay:0.3s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75"/>
+      <svg class="inv-sparkle" style="top:8%;right:8%;width:16px;animation-delay:0.3s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75" />
       </svg>
-      <svg class="inv-sparkle" style="bottom:12%;left:9%;width:19px;animation-delay:1.4s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spC)"/>
-        <defs><radialGradient id="spC" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+      <svg class="inv-sparkle" style="bottom:12%;left:9%;width:19px;animation-delay:1.4s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spC)" />
+        <defs>
+          <radialGradient id="spC" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#c0c0d8" stop-opacity="0" />
+          </radialGradient>
+        </defs>
       </svg>
 
       <div class="inv-panel">
-        <!-- Cuenta regresiva — arriba de todo -->
         <div class="inv-countdown inv-reveal" data-delay="1">
           <div class="inv-cd-header">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
             <span>Faltan</span>
           </div>
           <div class="inv-cd-units">
-            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-days">00</span><span class="inv-cd-label">días</span></div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-days">00</span><span
+                class="inv-cd-label">días</span></div>
             <div class="inv-cd-sep">:</div>
-            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-hours">00</span><span class="inv-cd-label">hs</span></div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-hours">00</span><span
+                class="inv-cd-label">hs</span></div>
             <div class="inv-cd-sep">:</div>
-            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-mins">00</span><span class="inv-cd-label">min</span></div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-mins">00</span><span
+                class="inv-cd-label">min</span></div>
             <div class="inv-cd-sep">:</div>
-            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-secs">00</span><span class="inv-cd-label">seg</span></div>
+            <div class="inv-countdown-unit"><span class="inv-cd-num" id="cd-secs">00</span><span
+                class="inv-cd-label">seg</span></div>
           </div>
         </div>
 
@@ -1343,19 +1744,17 @@
           <div class="inv-divider-line"></div>
         </div>
 
-        <!-- <p class="inv-screen-title inv-reveal" data-delay="3">Nos encontramos</p> -->
-
         <div class="inv-event-grid">
-
           <!-- Fecha -->
-          <div class="inv-event-item inv-reveal" data-delay="2">
-            <!-- Icono calendario — SVG minimalista plateado -->
+          <div class="inv-event-item inv-reveal" data-delay="3">
+            <!-- Icono calendario -->
             <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <rect x="3" y="5" width="22" height="20" rx="2" stroke="rgba(58,58,85,0.55)" stroke-width="1.2"/>
-              <path d="M3 10 H25" stroke="rgba(58,58,85,0.35)" stroke-width="1"/>
-              <rect x="9"  y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)"/>
-              <rect x="17" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)"/>
-              <text x="14" y="22" text-anchor="middle" font-family="Cinzel,serif" font-size="7" fill="rgba(26,26,46,0.70)" font-weight="400">15</text>
+              <rect x="3" y="5" width="22" height="20" rx="2" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" />
+              <path d="M3 10 H25" stroke="rgba(58,58,85,0.35)" stroke-width="1" />
+              <rect x="9" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)" />
+              <rect x="17" y="2" width="2" height="5" rx="1" fill="rgba(58,58,85,0.55)" />
+              <text x="14" y="22" text-anchor="middle" font-family="Cinzel,serif" font-size="7"
+                fill="rgba(26,26,46,0.70)" font-weight="400">15</text>
             </svg>
             <span class="inv-event-label">Fecha</span>
             <span class="inv-event-value">Sábado 15 de agosto<br>de 2026</span>
@@ -1373,58 +1772,68 @@
 
 
 
-          <!-- Hora + Dresscode -->
-          <div class="inv-event-row inv-reveal" data-delay="5">
-            <div class="inv-event-item">
-              <!-- Icono reloj -->
-              <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <circle cx="14" cy="14" r="10" stroke="rgba(58,58,85,0.55)" stroke-width="1.2"/>
-                <path d="M14 8 L14 14 L19 17" stroke="rgba(58,58,85,0.55)" stroke-width="1.3" stroke-linecap="round"/>
-              </svg>
-              <span class="inv-event-label">Hora</span>
-              <span class="inv-event-value">21:00 hs</span>
-            </div>
-            <div class="inv-event-row-sep" aria-hidden="true"></div>
-            <div class="inv-event-item">
-              <!-- Icono vestimenta -->
-              <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <path d="M10 3 L6 8 L10 9 L10 24 L18 24 L18 9 L22 8 L18 3 C18 3 16 5 14 5 C12 5 10 3 10 3Z" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
-              </svg>
-              <span class="inv-event-label">Dresscode</span>
-              <span class="inv-event-value">Formal</span>
-            </div>
-          </div>
-
-          <div class="inv-divider inv-reveal" data-delay="4" aria-hidden="true">
-            <div class="inv-divider-line"></div>
-            <div class="inv-divider-diamond-sm"></div>
-            <div class="inv-divider-diamond"></div>
-            <div class="inv-divider-diamond-sm"></div>
-            <div class="inv-divider-line"></div>
-          </div>
-
-          <!-- Lugar -->
-          <div class="inv-event-item inv-reveal" data-delay="3">
-            <!-- Icono ubicacion -->
+          <!-- Hora -->
+          <div class="inv-event-item inv-reveal" data-delay="5">
             <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <path d="M14 3 C9.58 3 6 6.58 6 11 C6 16.5 14 25 14 25 C14 25 22 16.5 22 11 C22 6.58 18.42 3 14 3Z" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none"/>
-              <circle cx="14" cy="11" r="3" stroke="rgba(58,58,85,0.45)" stroke-width="1.1" fill="none"/>
+              <circle cx="14" cy="14" r="10" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" />
+              <path d="M14 8 L14 14 L19 17" stroke="rgba(58,58,85,0.55)" stroke-width="1.3" stroke-linecap="round" />
             </svg>
-            <span class="inv-event-label">Lugar</span>
-            <span class="inv-event-value">Las Valkirias<br><em>Av. José Ignacio de la Roza Oeste 1431 Rivadavia</em></span>
+            <span class="inv-event-label">Hora</span>
+            <span class="inv-event-value">21:00 hs</span>
           </div>
 
         </div>
 
-        <!-- Cuenta regresiva -->
+      </div>
+
+    </section>
+
+
+    <!-- ================================================================
+         PANTALLA 5 — LUGAR
+    ================================================================ -->
+    <section class="inv-screen inv-screen-5" data-screen="4" aria-label="Lugar del evento">
+
+      <svg class="inv-sparkle" style="top:8%;right:8%;width:16px;animation-delay:0.5s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75" />
+      </svg>
+
+      <div class="inv-panel">
+
+
+
+        <div class="inv-event-grid">
+          <!-- Lugar -->
+          <div class="inv-event-item inv-reveal" data-delay="2">
+            <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M14 3 C9.58 3 6 6.58 6 11 C6 16.5 14 25 14 25 C14 25 22 16.5 22 11 C22 6.58 18.42 3 14 3Z"
+                stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none" />
+              <circle cx="14" cy="11" r="3" stroke="rgba(58,58,85,0.45)" stroke-width="1.1" fill="none" />
+            </svg>
+            <span class="inv-event-label">Lugar</span>
+            <span class="inv-event-value">Las Valkirias<br><em>Av. José Ignacio de la Roza Oeste 1431
+                Rivadavia</em></span>
+          </div>
+        </div>
+
         <!-- Botones de acción -->
-        <div class="inv-action-btns inv-reveal" data-delay="7">
+        <div class="inv-action-btns inv-reveal" data-delay="4">
           <a class="inv-action-btn" id="btn-maps" href="#" target="_blank" rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"
+                fill="currentColor" />
+            </svg>
             Cómo llegar
           </a>
           <a class="inv-action-btn" id="btn-calendar" href="#" target="_blank" rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.5"/><path d="M8 2v3M16 2v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 13h2v2H8z" fill="currentColor"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.8" />
+              <path d="M3 9h18" stroke="currentColor" stroke-width="1.5" />
+              <path d="M8 2v3M16 2v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M8 13h2v2H8z" fill="currentColor" />
+            </svg>
             Agendar
           </a>
         </div>
@@ -1433,34 +1842,31 @@
 
     </section>
 
-    <!-- ================================================================
-         PANTALLA 3 — MENSAJE DE BIENVENIDA
-    ================================================================ -->
-    <section class="inv-screen inv-screen-3" data-screen="3" aria-label="Mensaje">
 
-      <svg class="inv-sparkle" style="top:9%;left:8%;width:20px;animation-delay:0.6s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spD)"/>
-        <defs><radialGradient id="spD" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#b8b8d0" stop-opacity="0"/></radialGradient></defs>
-      </svg>
-      <svg class="inv-sparkle" style="bottom:11%;right:8%;width:13px;animation-delay:1.6s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.72"/>
+    <!-- ================================================================
+         PANTALLA 6 — DRESSCODE
+    ================================================================ -->
+    <section class="inv-screen inv-screen-6" data-screen="5" aria-label="Código de vestimenta">
+
+      <svg class="inv-sparkle" style="top:10%;right:10%;width:18px;animation-delay:0.8s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75" />
       </svg>
 
       <div class="inv-panel">
-        <p class="inv-message-title inv-reveal" data-delay="1">Una noche especial</p>
 
-        <div class="inv-message inv-reveal" data-delay="2">
-          <p>
-            Es con el corazón lleno de alegría<br>
-            que te invitamos a compartir<br>
-            este momento tan especial.<br><br>
-            Tu presencia hará de esta noche<br>
-            un recuerdo que guardaremos<br>
-            para siempre.
-          </p>
+
+
+        <div class="inv-event-item inv-reveal" data-delay="2">
+          <svg class="inv-event-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M10 3 L6 8 L10 9 L10 24 L18 24 L18 9 L22 8 L18 3 C18 3 16 5 14 5 C12 5 10 3 10 3Z"
+              stroke="rgba(58,58,85,0.55)" stroke-width="1.2" fill="none" stroke-linejoin="round" />
+          </svg>
+          <span class="inv-event-label">Dresscode</span>
+          <span class="inv-event-value">Formal</span>
         </div>
 
-        <div class="inv-divider inv-reveal" data-delay="3" style="margin-top:1.6rem" aria-hidden="true">
+        <div class="inv-divider inv-reveal" data-delay="3" aria-hidden="true">
           <div class="inv-divider-line"></div>
           <div class="inv-divider-diamond-sm"></div>
           <div class="inv-divider-diamond"></div>
@@ -1468,45 +1874,125 @@
           <div class="inv-divider-line"></div>
         </div>
 
-        <p class="inv-firma inv-reveal" data-delay="4">Lourdes &amp; Familia</p>
+        <div class="inv-dc-reserve inv-reveal" data-delay="4">
+          <p class="inv-dc-reserve-colors">No usar</p>
+          <p class="inv-dc-reserve-colors">Blanco &amp; Plateado</p>
+          <p class="inv-dc-reserve-text">reservados para la festejada</p>
+        </div>
+
       </div>
 
     </section>
 
-    <!-- ================================================================
-         PANTALLA 4 — RSVP
-    ================================================================ -->
-    <section class="inv-screen inv-screen-4" data-screen="4" aria-label="Confirmación de asistencia">
 
-      <svg class="inv-sparkle" style="top:8%;right:8%;width:22px;animation-delay:0.2s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spE)"/>
-        <path d="M20 7L21 19L33 20L21 21L20 33L19 21L7 20L19 19Z" fill="white" opacity="0.40"/>
-        <defs><radialGradient id="spE" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#c0c0d8" stop-opacity="0"/></radialGradient></defs>
+
+    <!-- ================================================================
+         PANTALLA 7 — REGALO
+    ================================================================ -->
+    <section class="inv-screen inv-screen-7" data-screen="6" aria-label="Regalo">
+
+      <svg class="inv-sparkle" style="top:9%;left:9%;width:16px;animation-delay:0.4s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.75" />
       </svg>
-      <svg class="inv-sparkle" style="bottom:13%;left:8%;width:15px;animation-delay:1.3s" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.68"/>
+      <svg class="inv-sparkle" style="bottom:12%;right:9%;width:14px;animation-delay:1.6s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.68" />
       </svg>
 
       <div class="inv-panel">
-        <p class="inv-rsvp-title inv-reveal" data-delay="1">Confirmá tu asistencia</p>
 
-        <p class="inv-rsvp-text inv-reveal" data-delay="2">
-          Tu presencia es muy importante para nosotros.
-          <span class="inv-rsvp-deadline">Respondé antes del 1 de Noviembre de 2025</span>
+
+
+        <svg class="inv-event-icon inv-reveal" data-delay="2" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <!-- caja -->
+          <rect x="4" y="13" width="20" height="11" rx="1.5" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" />
+          <!-- tapa -->
+          <rect x="3" y="10" width="22" height="4" rx="1" stroke="rgba(58,58,85,0.55)" stroke-width="1.2" />
+          <!-- lazo vertical -->
+          <line x1="14" y1="10" x2="14" y2="24" stroke="rgba(58,58,85,0.45)" stroke-width="1" />
+          <!-- lazo horizontal -->
+          <line x1="3" y1="12" x2="25" y2="12" stroke="rgba(58,58,85,0.45)" stroke-width="1" />
+          <!-- moño izq -->
+          <path d="M14 10 C12 8 9 7 9 9 C9 11 12 10.5 14 10Z" stroke="rgba(58,58,85,0.50)" stroke-width="1" fill="none"
+            stroke-linejoin="round" />
+          <!-- moño der -->
+          <path d="M14 10 C16 8 19 7 19 9 C19 11 16 10.5 14 10Z" stroke="rgba(58,58,85,0.50)" stroke-width="1"
+            fill="none" stroke-linejoin="round" />
+        </svg>
+        <p class="inv-regalo-title inv-reveal" data-delay="3">Regalo</p>
+
+        <p class="inv-regalo-text inv-reveal" data-delay="3">
+          Tu presencia ya es el mejor regalo.<br>Si además querés sumarle algo a esta noche,<br>podés hacerlo a través
+          de MercadoPago.
         </p>
+        <div class="inv-divider inv-reveal" data-delay="4" aria-hidden="true">
+          <div class="inv-divider-line"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-diamond"></div>
+          <div class="inv-divider-diamond-sm"></div>
+          <div class="inv-divider-line"></div>
+        </div>
+        <div class="inv-alias-box inv-reveal" data-delay="5">
+          <span class="inv-alias-label">Alias</span>
+          <span class="inv-alias-value" id="mp-alias">pepito.2458.mp</span>
+        </div>
 
-        <a
-          class="inv-rsvp-btn inv-reveal" data-delay="3"
-          href="https://wa.me/5491100000000?text=Hola!+Confirmo+mi+asistencia+a+la+quincea%C3%B1era+de+Lourdes"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="pointer-events:auto"
-          aria-label="Confirmar asistencia por WhatsApp"
-        >
-          Confirmar asistencia
-        </a>
+        <button class="inv-alias-copy inv-reveal" data-delay="6" id="btn-copy-alias" type="button"
+          aria-label="Copiar alias de MercadoPago">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.8" />
+            <path d="M5 16H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1" stroke="currentColor"
+              stroke-width="1.8" />
+          </svg>
+          <span id="btn-copy-alias-text">Copiar alias</span>
+        </button>
 
-        <div class="inv-divider inv-reveal" data-delay="4" style="margin-top:1.4rem" aria-hidden="true">
+
+
+      </div>
+
+    </section>
+
+
+    <!-- ================================================================
+         PANTALLA 8 — RSVP
+    ================================================================ -->
+    <section class="inv-screen inv-screen-8" data-screen="7" aria-label="Confirmación de asistencia">
+
+      <svg class="inv-sparkle" style="top:8%;right:8%;width:22px;animation-delay:0.2s" viewBox="0 0 40 40" fill="none"
+        aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="url(#spE)" />
+        <path d="M20 7L21 19L33 20L21 21L20 33L19 21L7 20L19 19Z" fill="white" opacity="0.40" />
+        <defs>
+          <radialGradient id="spE" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#c0c0d8" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+      <svg class="inv-sparkle" style="bottom:13%;left:8%;width:15px;animation-delay:1.3s" viewBox="0 0 40 40"
+        fill="none" aria-hidden="true">
+        <path d="M20 0L21.6 18.4L40 20L21.6 21.6L20 40L18.4 21.6L0 20L18.4 18.4Z" fill="white" opacity="0.68" />
+      </svg>
+
+      <div class="inv-panel">
+
+        <div class="inv-rsvp-header inv-reveal" data-delay="1">
+          <svg class="inv-ticket-svg" viewBox="0 0 100 58" fill="none" aria-hidden="true">
+            <path d="M8 4 H92 Q96 4 96 8 V22 Q90 22 90 29 Q90 36 96 36 V50 Q96 54 92 54 H8 Q4 54 4 50 V36 Q10 36 10 29 Q10 22 4 22 V8 Q4 4 8 4 Z"
+                  stroke="rgba(58,58,85,0.40)" stroke-width="1.2" fill="rgba(255,255,255,0.28)"/>
+            <line x1="10" y1="29" x2="90" y2="29" stroke="rgba(58,58,85,0.18)" stroke-width="1" stroke-dasharray="3,3"/>
+            <text id="ticket-num" x="50" y="20" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Cinzel,serif" font-size="16" fill="rgba(26,26,46,0.80)">?</text>
+            <text x="50" y="42" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Raleway,sans-serif" font-size="6" fill="rgba(58,58,85,0.48)" letter-spacing="2.5">PERSONAS</text>
+          </svg>
+          <p class="inv-rsvp-subtitle" id="rsvp-subtitle">Esta invitación es para ? persona</p>
+          <p class="inv-rsvp-deadline">Tenés tiempo de avisar hasta el 1 de agosto</p>
+        </div>
+
+        <div class="inv-divider inv-reveal" data-delay="2" aria-hidden="true">
           <div class="inv-divider-line"></div>
           <div class="inv-divider-diamond-sm"></div>
           <div class="inv-divider-diamond"></div>
@@ -1514,10 +2000,21 @@
           <div class="inv-divider-line"></div>
         </div>
 
-        <div class="inv-contact-block inv-reveal" data-delay="5">
-          <span class="inv-contact-label">Consultas</span>
-          <span class="inv-contact-number">+54 9 11 0000-0000</span>
+        <form class="inv-rsvp-form inv-reveal" data-delay="3" id="rsvp-form" novalidate>
+          <div id="rsvp-guests-container"></div>
+          <p class="inv-rsvp-error" id="rsvp-error" hidden>Completá todos los campos antes de continuar.</p>
+          <button type="submit" class="inv-rsvp-submit" id="rsvp-submit">Confirmar asistencia</button>
+        </form>
+
+        <div class="inv-rsvp-success" id="rsvp-success" hidden>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <circle cx="22" cy="22" r="19" stroke="rgba(58,122,74,0.50)" stroke-width="1.5"/>
+            <path d="M13 22 L19 28 L31 15" stroke="rgba(58,122,74,0.80)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="inv-rsvp-success-title">¡Gracias!</p>
+          <p class="inv-rsvp-success-text">Tu asistencia fue confirmada.<br>¡Nos vemos el 15 de agosto!</p>
         </div>
+
       </div>
 
     </section>
@@ -1532,30 +2029,33 @@
 
       // ── Cuenta regresiva ──
       function updateCountdown() {
-        var now  = new Date();
+        var now = new Date();
         var diff = EVENT_DATE - now;
         if (diff <= 0) {
-          document.getElementById('cd-days').textContent  = '00';
+          document.getElementById('cd-days').textContent = '00';
           document.getElementById('cd-hours').textContent = '00';
-          document.getElementById('cd-mins').textContent  = '00';
-          document.getElementById('cd-secs').textContent  = '00';
+          document.getElementById('cd-mins').textContent = '00';
+          document.getElementById('cd-secs').textContent = '00';
           return;
         }
-        var days  = Math.floor(diff / 86400000);
+        var days = Math.floor(diff / 86400000);
         var hours = Math.floor((diff % 86400000) / 3600000);
-        var mins  = Math.floor((diff % 3600000)  / 60000);
-        var secs  = Math.floor((diff % 60000)    / 1000);
-        document.getElementById('cd-days').textContent  = String(days).padStart(2, '0');
+        var mins = Math.floor((diff % 3600000) / 60000);
+        var secs = Math.floor((diff % 60000) / 1000);
+        document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
         document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('cd-mins').textContent  = String(mins).padStart(2, '0');
-        document.getElementById('cd-secs').textContent  = String(secs).padStart(2, '0');
+        document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+        document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
       }
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
-      // ── Google Maps ──
-      // TODO: reemplazar con la URL correcta de Google Maps cuando la tengas
-      var mapsUrl = 'https://maps.google.com/?q=Las+Valkirias+Av.+José+Ignacio+de+la+Roza+Oeste+1431+Rivadavia';
+      // ── Maps (iOS → Apple Maps, Android/otros → Google Maps) ──
+      var mapsQuery = 'Las+Valkirias+Av.+José+Ignacio+de+la+Roza+Oeste+1431+Rivadavia';
+      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      var mapsUrl = isIOS
+        ? 'https://maps.apple.com/?q=' + mapsQuery
+        : 'https://maps.google.com/?q=' + mapsQuery;
       document.getElementById('btn-maps').href = mapsUrl;
 
       // ── Google Calendar ──
@@ -1567,31 +2067,155 @@
         'location=Las%20Valkirias%2C%20Av.%20Jos%C3%A9%20Ignacio%20de%20la%20Roza%20Oeste%201431%2C%20Rivadavia',
       ].join('&');
       document.getElementById('btn-calendar').href = calUrl;
+
+      // ── Copiar alias MercadoPago ──
+      var btnCopy = document.getElementById('btn-copy-alias');
+      if (btnCopy) {
+        btnCopy.addEventListener('click', function () {
+          var alias = document.getElementById('mp-alias').textContent;
+          navigator.clipboard.writeText(alias).then(function () {
+            var txt = document.getElementById('btn-copy-alias-text');
+            txt.textContent = '¡Copiado!';
+            btnCopy.classList.add('copied');
+            setTimeout(function () {
+              txt.textContent = 'Copiar alias';
+              btnCopy.classList.remove('copied');
+            }, 2500);
+          });
+        });
+      }
+    })();
+  </script>
+
+  <!-- ── RSVP: formulario dinámico ── -->
+  <script>
+    (function () {
+      var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwEVHwcpAtk8_b-GmO63kqbSESzvxetPHDpa7MZnxyLSSrN1fo_-gxsONj2eUXaB8Hu/exec';
+
+      // Leer ?n= de la URL (1-5, default 1)
+      var params = new URLSearchParams(window.location.search);
+      var n = parseInt(params.get('n'), 10);
+      if (!n || n < 1 || n > 5) n = 1;
+
+      // Actualizar ticket y subtítulo
+      var ticketNum = document.getElementById('ticket-num');
+      var subtitle  = document.getElementById('rsvp-subtitle');
+      if (ticketNum) ticketNum.textContent = String(n);
+      if (subtitle)  subtitle.textContent  = n === 1
+        ? 'Esta invitación es para 1 persona'
+        : 'Esta invitación es para ' + n + ' personas';
+
+      // Generar campos por cada invitado
+      var container = document.getElementById('rsvp-guests-container');
+      if (!container) return;
+
+      for (var i = 1; i <= n; i++) {
+        var div = document.createElement('div');
+        div.className = 'inv-rsvp-guest';
+        div.innerHTML =
+          (n > 1 ? '<p class="inv-rsvp-guest-label">Persona ' + i + '</p>' : '') +
+          '<input class="inv-rsvp-input" type="text" name="nombre_' + i + '" placeholder="Nombre y apellido" autocomplete="name">' +
+          '<p class="inv-rsvp-menu-label">Tipo de menú</p>' +
+          '<div class="inv-rsvp-radio-group">' +
+            '<label class="inv-rsvp-radio">' +
+              '<input type="radio" name="menu_' + i + '" value="Adulto">' +
+              '<span>Adulto</span>' +
+            '</label>' +
+            '<label class="inv-rsvp-radio">' +
+              '<input type="radio" name="menu_' + i + '" value="Adolescente">' +
+              '<span>Adolescente</span>' +
+            '</label>' +
+          '</div>' +
+          '<input class="inv-rsvp-input" type="text" name="espec_' + i + '" placeholder="Especificaciones alimentarias (opcional)">';
+        container.appendChild(div);
+      }
+
+      // Manejar envío
+      var form      = document.getElementById('rsvp-form');
+      var submitBtn = document.getElementById('rsvp-submit');
+      var errorMsg  = document.getElementById('rsvp-error');
+      var successEl = document.getElementById('rsvp-success');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorMsg.hidden = true;
+
+        // Validar y armar datos — los bloques vacíos se omiten
+        var personas = [];
+        var valid = true;
+        for (var i = 1; i <= n; i++) {
+          var nombreEl = form.querySelector('[name="nombre_' + i + '"]');
+          var menuEl   = form.querySelector('[name="menu_' + i + '"]:checked');
+          var especEl  = form.querySelector('[name="espec_' + i + '"]');
+          var nombre   = nombreEl ? nombreEl.value.trim() : '';
+          if (!nombre) continue; // bloque vacío: se saltea
+          if (!menuEl) { valid = false; break; } // nombre sin menú: error
+          personas.push({
+            nombre:           nombre,
+            menu:             menuEl.value,
+            especificaciones: especEl ? especEl.value.trim() : ''
+          });
+        }
+
+        if (!valid) {
+          errorMsg.textContent = 'Seleccioná el tipo de menú para cada persona ingresada.';
+          errorMsg.hidden = false;
+          return;
+        }
+        if (personas.length === 0) {
+          errorMsg.textContent = 'Ingresá al menos una persona para confirmar.';
+          errorMsg.hidden = false;
+          return;
+        }
+
+        submitBtn.disabled    = true;
+        submitBtn.textContent = 'Enviando…';
+
+        // no-cors: Apps Script no devuelve CORS headers confiables en todos los browsers
+        fetch(ENDPOINT, {
+          method: 'POST',
+          mode:   'no-cors',
+          body:   JSON.stringify({ personas: personas }),
+        })
+        .then(function () {
+          form.hidden       = true;
+          successEl.hidden  = false;
+        })
+        .catch(function () {
+          submitBtn.disabled    = false;
+          submitBtn.textContent = 'Confirmar asistencia';
+          errorMsg.textContent  = 'Error al enviar. Verificá tu conexión e intentá de nuevo.';
+          errorMsg.hidden       = false;
+        });
+      });
     })();
   </script>
 
   <!-- ── Carrusel apilado de fotos ── -->
   <script>
     (function () {
-      var stack   = document.getElementById('inv-card-stack');
+      var stack = document.getElementById('inv-card-stack');
       var counter = document.getElementById('inv-card-counter');
       if (!stack) return;
 
       // Ordenar cartas por data-card (0 = primera, 3 = última)
       var cards = Array.from(stack.querySelectorAll('.inv-card'))
         .sort(function (a, b) { return +a.dataset.card - +b.dataset.card; });
-      var total = cards.length; // 4
+      var total = cards.length; // 6
 
       // order[0] = índice de la carta en el tope del mazo
-      var order = [0, 1, 2, 3];
+      var order = [0, 1, 2, 3, 4, 5];
 
       // ── Aspecto visual por posición en la pila ───────────────────────
-      // x offset lateral + rotaciones variadas → efecto de fotos tiradas al azar
+      // Solo las primeras 4 posiciones son visibles; las 2 restantes se ocultan
+      // debajo para que no asomen por los costados.
       var STATES = [
-        { scale: 1,     x:  0, y:  0, rotate:  0,   opacity: 1,    zIndex: 4 },
-        { scale: 0.940, x:  6, y:  9, rotate: -5.8, opacity: 1,    zIndex: 3 },
-        { scale: 0.884, x: -5, y: 18, rotate:  4.2, opacity: 0.95, zIndex: 2 },
-        { scale: 0.833, x:  4, y: 27, rotate: -7.8, opacity: 0.85, zIndex: 1 },
+        { scale: 1, x: 0, y: 0, rotate: 0, opacity: 1, zIndex: 6 },
+        { scale: 0.940, x: 6, y: 9, rotate: -5.8, opacity: 1, zIndex: 5 },
+        { scale: 0.884, x: -5, y: 18, rotate: 4.2, opacity: 0.95, zIndex: 4 },
+        { scale: 0.833, x: 4, y: 27, rotate: -7.8, opacity: 0.85, zIndex: 3 },
+        { scale: 0.790, x: -3, y: 27, rotate: 3.1, opacity: 0, zIndex: 2 },
+        { scale: 0.755, x: 3, y: 27, rotate: -4.5, opacity: 0, zIndex: 1 },
       ];
 
       function applyCard(card, s, animated) {
@@ -1599,8 +2223,8 @@
           ? 'transform 0.40s cubic-bezier(0.34,1.4,0.64,1), opacity 0.30s ease'
           : 'none';
         card.style.transform = 'translateX(-50%) translateX(' + s.x + 'px) translateY(' + s.y + 'px) scale(' + s.scale + ') rotate(' + s.rotate + 'deg)';
-        card.style.opacity   = String(s.opacity);
-        card.style.zIndex    = String(s.zIndex);
+        card.style.opacity = String(s.opacity);
+        card.style.zIndex = String(s.zIndex);
       }
 
       function applyAll(animated) {
@@ -1616,17 +2240,17 @@
       // ── Manda la carta del tope al fondo del mazo en la dirección del drag ──
       function sendToBack(dx, dy) {
         var topIdx = order[0];
-        var card   = cards[topIdx];
+        var card = cards[topIdx];
 
         // Vuelo en la dirección exacta del gesto, normalizado a ~580px
-        var dist   = Math.sqrt(dx * dx + dy * dy) || 1;
-        var tx     = (dx / dist) * 580;
-        var ty     = (dy / dist) * 580;
-        var rot    = dx * 0.12; // rotación según componente horizontal
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        var tx = (dx / dist) * 580;
+        var ty = (dy / dist) * 580;
+        var rot = dx * 0.12; // rotación según componente horizontal
         card.style.transition = 'transform 0.36s ease, opacity 0.20s ease';
-        card.style.transform  = 'translateX(-50%) translateX(' + tx + 'px) translateY(' + ty + 'px) scale(0.78) rotate(' + rot + 'deg)';
-        card.style.opacity    = '0';
-        card.style.zIndex     = '0';
+        card.style.transform = 'translateX(-50%) translateX(' + tx + 'px) translateY(' + ty + 'px) scale(0.78) rotate(' + rot + 'deg)';
+        card.style.opacity = '0';
+        card.style.zIndex = '0';
 
         // Rotar el mazo: la carta sale del tope y pasa al fondo
         order.push(order.shift()); // [0,1,2,3] → [1,2,3,0]
@@ -1643,15 +2267,15 @@
         // Después de la animación de salida, reposicionar la carta al fondo y reaparecer
         setTimeout(function () {
           var backCard = cards[order[total - 1]];
-          var s        = STATES[total - 1];
+          var s = STATES[total - 1];
           backCard.style.transition = 'none';
-          backCard.style.transform  = 'translateX(-50%) translateX(' + s.x + 'px) translateY(' + s.y + 'px) scale(' + s.scale + ') rotate(' + s.rotate + 'deg)';
-          backCard.style.zIndex     = String(s.zIndex);
-          backCard.style.opacity    = '0';
+          backCard.style.transform = 'translateX(-50%) translateX(' + s.x + 'px) translateY(' + s.y + 'px) scale(' + s.scale + ') rotate(' + s.rotate + 'deg)';
+          backCard.style.zIndex = String(s.zIndex);
+          backCard.style.opacity = '0';
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
               backCard.style.transition = 'opacity 0.32s ease';
-              backCard.style.opacity    = String(s.opacity);
+              backCard.style.opacity = String(s.opacity);
             });
           });
         }, 370);
@@ -1683,17 +2307,17 @@
 
         // Carta del tope sigue al dedo en cualquier dirección
         var card = cards[order[0]];
-        var rot  = dx * 0.04;
+        var rot = dx * 0.04;
         card.style.transform = 'translateX(-50%) translateX(' + dx + 'px) translateY(' + dy + 'px) scale(1) rotate(' + rot + 'deg)';
 
         // La segunda carta "sube" progresivamente según la distancia total
         if (order[1] !== undefined) {
           var dist = Math.sqrt(dx * dx + dy * dy);
-          var p    = Math.min(dist / 110, 1);
-          var s1   = STATES[1], s0 = STATES[0];
+          var p = Math.min(dist / 110, 1);
+          var s1 = STATES[1], s0 = STATES[0];
           var next = cards[order[1]];
           next.style.transition = 'none';
-          next.style.transform  = 'translateX(-50%) translateX(' + (s1.x * (1 - p)) + 'px) translateY(' + (s1.y * (1 - p)) + 'px) scale(' + (s1.scale + (s0.scale - s1.scale) * p) + ') rotate(' + s1.rotate + 'deg)';
+          next.style.transform = 'translateX(-50%) translateX(' + (s1.x * (1 - p)) + 'px) translateY(' + (s1.y * (1 - p)) + 'px) scale(' + (s1.scale + (s0.scale - s1.scale) * p) + ') rotate(' + s1.rotate + 'deg)';
         }
       }
 
@@ -1701,22 +2325,22 @@
         if (!dragging) return;
         dragging = false;
         if (!dirLocked) return;
-        var dx   = cx - startX;
-        var dy   = cy - startY;
+        var dx = cx - startX;
+        var dy = cy - startY;
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist > 65) sendToBack(dx, dy);
-        else           applyAll(true);
+        else applyAll(true);
       }
 
       // Touch
-      stack.addEventListener('touchstart', function (e) { onStart(e.touches[0].clientX, e.touches[0].clientY); },                                   { passive: true  });
-      stack.addEventListener('touchmove',  function (e) { onMove(e.touches[0].clientX, e.touches[0].clientY, function () { e.preventDefault(); }); }, { passive: false });
-      stack.addEventListener('touchend',   function (e) { onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY); },                         { passive: true  });
+      stack.addEventListener('touchstart', function (e) { onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+      stack.addEventListener('touchmove', function (e) { onMove(e.touches[0].clientX, e.touches[0].clientY, function () { e.preventDefault(); }); }, { passive: false });
+      stack.addEventListener('touchend', function (e) { onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY); }, { passive: true });
 
       // Mouse (desktop)
-      stack.addEventListener('mousedown',    function (e) { onStart(e.clientX, e.clientY); });
+      stack.addEventListener('mousedown', function (e) { onStart(e.clientX, e.clientY); });
       document.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY, null); });
-      document.addEventListener('mouseup',   function (e) { onEnd(e.clientX, e.clientY); });
+      document.addEventListener('mouseup', function (e) { onEnd(e.clientX, e.clientY); });
 
       // ── Init ─────────────────────────────────────────────────────────
       applyAll(false);
@@ -1725,7 +2349,7 @@
       // Ocultar placeholder cuando la imagen cargue correctamente
       cards.forEach(function (card) {
         var img = card.querySelector('img');
-        var ph  = card.querySelector('.inv-card-placeholder');
+        var ph = card.querySelector('.inv-card-placeholder');
         if (!img || !ph) return;
         function hide() { if (img.naturalWidth > 0) ph.style.display = 'none'; }
         if (img.complete) { hide(); } else { img.addEventListener('load', hide); }
@@ -1738,8 +2362,8 @@
   <script>
     (function () {
       const scrollContainer = document.getElementById('inv-scroll-container');
-      const screens         = document.querySelectorAll('.inv-screen');
-      const dots            = document.querySelectorAll('.inv-dot');
+      const screens = document.querySelectorAll('.inv-screen');
+      const dots = document.querySelectorAll('.inv-dot');
 
       // --- IntersectionObserver: activa .is-visible en cada .inv-reveal
       //     cuando su pantalla entra en el viewport del scroll-container ---
@@ -1755,14 +2379,18 @@
           });
         },
         {
-          root:      scrollContainer,
+          root: scrollContainer,
           threshold: 0.45,   // la pantalla debe ser 45% visible para disparar
         }
       );
 
       screens.forEach(function (screen) { revealObs.observe(screen); });
 
-      // --- IntersectionObserver: actualiza los puntos de navegacion ---
+      // --- IntersectionObserver: actualiza los puntos de navegacion y el hint ---
+      var scrollHint  = document.getElementById('scroll-hint');
+      var lastScreen  = screens[screens.length - 1];
+      var lastIdx     = lastScreen ? lastScreen.dataset.screen : null;
+
       const dotObs = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
@@ -1771,11 +2399,13 @@
               dots.forEach(function (d) { d.classList.remove('active'); });
               var activeDot = document.querySelector('.inv-dot[data-screen="' + idx + '"]');
               if (activeDot) activeDot.classList.add('active');
+              // Ocultar hint en la última pantalla
+              if (scrollHint) scrollHint.hidden = (idx === lastIdx);
             }
           });
         },
         {
-          root:      scrollContainer,
+          root: scrollContainer,
           threshold: 0.55,
         }
       );
@@ -1797,18 +2427,18 @@
   <script type="module">
 
     import * as THREE from 'three';
-    import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js';
-    import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
-    import { UnrealBloomPass }  from 'three/addons/postprocessing/UnrealBloomPass.js';
-    import { ShaderPass }       from 'three/addons/postprocessing/ShaderPass.js';
-    import { OutputPass }       from 'three/addons/postprocessing/OutputPass.js';
-    import { RoomEnvironment }  from 'three/addons/environments/RoomEnvironment.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
     /* ============================================================
        DETECCION DE CAPACIDADES Y CONTEXTO
     ============================================================ */
     const IS_MOBILE = /Mobi|Android|iPhone|iPad|iPod|Touch/i.test(navigator.userAgent)
-                      || window.innerWidth < 768;
+      || window.innerWidth < 768;
 
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1817,46 +2447,46 @@
     ============================================================ */
     const CONFIG = {
       // --- Particulas de glitter ---
-      PARTICLE_COUNT_DESKTOP : 10000,   // cantidad en desktop
-      PARTICLE_COUNT_MOBILE  : 10000,   // cantidad en mobile (60fps friendly)
-      PARTICLE_SIZE_MIN      : 0.012,  // tamano minimo de cada glitter (unidades Three.js)
-      PARTICLE_SIZE_MAX      : 0.055,  // tamano maximo
-      FALL_SPEED             : 0.0118, // velocidad de caida vertical (reducir para efecto mas suave)
-      DRIFT_SPEED            : 0.0104, // deriva horizontal suave (como resistencia del aire)
-      ROTATION_SPEED         : 0.018,  // velocidad de rotacion de cada particula en sus 3 ejes
-      SPAWN_HEIGHT           : 7.0,    // altura desde donde caen las particulas (Y positivo)
-      FIELD_WIDTH            : 12.0,   // ancho del campo de particulas
-      FIELD_DEPTH            : 8.0,    // profundidad del campo de particulas
+      PARTICLE_COUNT_DESKTOP: 10000,   // cantidad en desktop
+      PARTICLE_COUNT_MOBILE: 10000,   // cantidad en mobile (60fps friendly)
+      PARTICLE_SIZE_MIN: 0.012,  // tamano minimo de cada glitter (unidades Three.js)
+      PARTICLE_SIZE_MAX: 0.055,  // tamano maximo
+      FALL_SPEED: 0.0118, // velocidad de caida vertical (reducir para efecto mas suave)
+      DRIFT_SPEED: 0.0104, // deriva horizontal suave (como resistencia del aire)
+      ROTATION_SPEED: 0.018,  // velocidad de rotacion de cada particula en sus 3 ejes
+      SPAWN_HEIGHT: 7.0,    // altura desde donde caen las particulas (Y positivo)
+      FIELD_WIDTH: 12.0,   // ancho del campo de particulas
+      FIELD_DEPTH: 8.0,    // profundidad del campo de particulas
 
       // --- Luces dinamicas ---
-      LIGHT_COUNT            : IS_MOBILE ? 3 : 6,   // numero de luces de acento
-      LIGHT_RADIUS           : 4.5,    // radio de orbita de las luces
-      LIGHT_SPEED            : 0.0003, // velocidad de movimiento de las luces
-      LIGHT_INTENSITY        : IS_MOBILE ? 12 : 28,  // intensidad de cada luz
-      LIGHT_DECAY            : 2.2,    // decay fisico (2 = cuadratico, realista)
+      LIGHT_COUNT: IS_MOBILE ? 3 : 6,   // numero de luces de acento
+      LIGHT_RADIUS: 4.5,    // radio de orbita de las luces
+      LIGHT_SPEED: 0.0003, // velocidad de movimiento de las luces
+      LIGHT_INTENSITY: IS_MOBILE ? 12 : 28,  // intensidad de cada luz
+      LIGHT_DECAY: 2.2,    // decay fisico (2 = cuadratico, realista)
 
       // --- Bokeh de fondo ---
-      BOKEH_COUNT            : IS_MOBILE ? 8 : 16,  // esferas de bokeh de fondo
-      BOKEH_SIZE_MIN         : 0.15,
-      BOKEH_SIZE_MAX         : 0.65,
-      BOKEH_DEPTH_MIN        : -6.0,   // profundidad minima (atras)
-      BOKEH_DEPTH_MAX        : -2.5,   // profundidad maxima
+      BOKEH_COUNT: IS_MOBILE ? 8 : 16,  // esferas de bokeh de fondo
+      BOKEH_SIZE_MIN: 0.15,
+      BOKEH_SIZE_MAX: 0.65,
+      BOKEH_DEPTH_MIN: -6.0,   // profundidad minima (atras)
+      BOKEH_DEPTH_MAX: -2.5,   // profundidad maxima
 
       // --- Post-processing ---
-      BLOOM_STRENGTH         : IS_MOBILE ? 0.8 : 1.2,
-      BLOOM_RADIUS           : 0.4,
-      BLOOM_THRESHOLD        : 0.65,   // más alto = solo los destellos más intensos brillan
-      FILM_GRAIN_INTENSITY   : 0.018,  // intensidad del film grain (0 = desactivado)
-      VIGNETTE_DARKNESS      : 0.65,   // oscuridad de la viñeta (0 = ninguna, 1 = total)
+      BLOOM_STRENGTH: IS_MOBILE ? 0.8 : 1.2,
+      BLOOM_RADIUS: 0.4,
+      BLOOM_THRESHOLD: 0.65,   // más alto = solo los destellos más intensos brillan
+      FILM_GRAIN_INTENSITY: 0.018,  // intensidad del film grain (0 = desactivado)
+      VIGNETTE_DARKNESS: 0.65,   // oscuridad de la viñeta (0 = ninguna, 1 = total)
 
       // --- Lens flares procedurales ---
-      FLARE_COUNT            : 0,   // desactivados — se ven como cuadrados
+      FLARE_COUNT: 0,   // desactivados — se ven como cuadrados
 
       // --- Colores (paleta plateada) ---
-      COLOR_BG               : 0xd0d0db,
-      COLOR_AMBIENT          : 0x2a2a40,   // luz ambiental plateada-fría
+      COLOR_BG: 0xd0d0db,
+      COLOR_AMBIENT: 0x2a2a40,   // luz ambiental plateada-fría
       // Array de colores para las luces dinamicas (plata, cromo, acero azulado)
-      LIGHT_COLORS           : [
+      LIGHT_COLORS: [
         0xffffff, 0xe8e8f0, 0xc0c0d0,
         0xb0c4de, 0xd0d0e8, 0xf0f0ff
       ],
@@ -1950,9 +2580,9 @@
         const light = new THREE.PointLight(color, CONFIG.LIGHT_INTENSITY, 12, CONFIG.LIGHT_DECAY);
         // Fase inicial distribuida uniformemente
         const phase = (i / CONFIG.LIGHT_COUNT) * Math.PI * 2;
-        light.userData.phase     = phase;
-        light.userData.orbitR    = CONFIG.LIGHT_RADIUS * (0.7 + Math.random() * 0.6);
-        light.userData.orbitY    = (Math.random() - 0.5) * 2.5;
+        light.userData.phase = phase;
+        light.userData.orbitR = CONFIG.LIGHT_RADIUS * (0.7 + Math.random() * 0.6);
+        light.userData.orbitY = (Math.random() - 0.5) * 2.5;
         light.userData.orbitSpeed = CONFIG.LIGHT_SPEED * (0.6 + Math.random() * 0.8);
         light.userData.orbitTilt = Math.random() * 0.4;
         scene.add(light);
@@ -1972,15 +2602,15 @@
 
       // Material del glitter: fisicamente metalico con variacion por instancia
       const glitterMat = new THREE.MeshPhysicalMaterial({
-        color          : 0xffffff,
-        metalness      : 1.0,
-        roughness      : 0.1,
-        reflectivity   : 1.0,
+        color: 0xffffff,
+        metalness: 1.0,
+        roughness: 0.1,
+        reflectivity: 1.0,
         envMapIntensity: 2.5,
-        emissive       : new THREE.Color(0x9999bb),
+        emissive: new THREE.Color(0x9999bb),
         emissiveIntensity: 0.12,
-        side           : THREE.DoubleSide,
-        vertexColors   : false,
+        side: THREE.DoubleSide,
+        vertexColors: false,
       });
 
       // Habilitar colores por instancia
@@ -2002,17 +2632,17 @@
       ];
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const c = silverPalette[Math.floor(Math.random() * silverPalette.length)];
-        instanceColors[i * 3]     = c[0];
+        instanceColors[i * 3] = c[0];
         instanceColors[i * 3 + 1] = c[1];
         instanceColors[i * 3 + 2] = c[2];
       }
       glitterMesh.instanceColor = new THREE.InstancedBufferAttribute(instanceColors, 3);
 
       // Datos de estado por particula (posicion, velocidad, rotacion, tamano)
-      const pPos   = new Float32Array(PARTICLE_COUNT * 3);  // posicion xyz
-      const pVel   = new Float32Array(PARTICLE_COUNT * 3);  // velocidad xyz
-      const pRot   = new Float32Array(PARTICLE_COUNT * 3);  // angulos de rotacion
-      const pRotV  = new Float32Array(PARTICLE_COUNT * 3);  // velocidad angular
+      const pPos = new Float32Array(PARTICLE_COUNT * 3);  // posicion xyz
+      const pVel = new Float32Array(PARTICLE_COUNT * 3);  // velocidad xyz
+      const pRot = new Float32Array(PARTICLE_COUNT * 3);  // angulos de rotacion
+      const pRotV = new Float32Array(PARTICLE_COUNT * 3);  // velocidad angular
       const pScale = new Float32Array(PARTICLE_COUNT);       // escala
 
       // Objeto temporal reutilizable para construir matrices (zero GC)
@@ -2022,27 +2652,27 @@
         const hw = CONFIG.FIELD_WIDTH / 2;
         const hd = CONFIG.FIELD_DEPTH / 2;
 
-        pPos[i*3]   = (Math.random() - 0.5) * CONFIG.FIELD_WIDTH;
-        pPos[i*3+1] = fromTop
+        pPos[i * 3] = (Math.random() - 0.5) * CONFIG.FIELD_WIDTH;
+        pPos[i * 3 + 1] = fromTop
           ? CONFIG.SPAWN_HEIGHT + Math.random() * 2
           : (Math.random() - 0.5) * (CONFIG.SPAWN_HEIGHT + 4);
-        pPos[i*3+2] = (Math.random() - 0.5) * CONFIG.FIELD_DEPTH;
+        pPos[i * 3 + 2] = (Math.random() - 0.5) * CONFIG.FIELD_DEPTH;
 
         // Velocidad: caida suave con deriva horizontal aleatoria
-        pVel[i*3]   = (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 4;
-        pVel[i*3+1] = -(CONFIG.FALL_SPEED * (0.5 + Math.random() * 1.5));
-        pVel[i*3+2] = (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 2;
+        pVel[i * 3] = (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 4;
+        pVel[i * 3 + 1] = -(CONFIG.FALL_SPEED * (0.5 + Math.random() * 1.5));
+        pVel[i * 3 + 2] = (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 2;
 
         // Rotacion inicial aleatoria en los 3 ejes
-        pRot[i*3]   = Math.random() * Math.PI * 2;
-        pRot[i*3+1] = Math.random() * Math.PI * 2;
-        pRot[i*3+2] = Math.random() * Math.PI * 2;
+        pRot[i * 3] = Math.random() * Math.PI * 2;
+        pRot[i * 3 + 1] = Math.random() * Math.PI * 2;
+        pRot[i * 3 + 2] = Math.random() * Math.PI * 2;
 
         // Velocidad angular — el glitter tumbles en el aire
         const rs = CONFIG.ROTATION_SPEED;
-        pRotV[i*3]   = (Math.random() - 0.5) * rs * 2;
-        pRotV[i*3+1] = (Math.random() - 0.5) * rs * 3;
-        pRotV[i*3+2] = (Math.random() - 0.5) * rs;
+        pRotV[i * 3] = (Math.random() - 0.5) * rs * 2;
+        pRotV[i * 3 + 1] = (Math.random() - 0.5) * rs * 3;
+        pRotV[i * 3 + 2] = (Math.random() - 0.5) * rs;
 
         // Tamano: mezcla de particulas pequenas y algunas mas grandes para profundidad
         const t = Math.random();
@@ -2062,37 +2692,37 @@
       // Como InstancedMesh no permite materiales por instancia facilmente,
       // usamos un shader material con colores por instancia y emissive
       const bokehMat = new THREE.MeshStandardMaterial({
-        color      : 0x000000,
-        emissive   : 0xffffff,
+        color: 0x000000,
+        emissive: 0xffffff,
         emissiveIntensity: 0.0,  // se controla via instanceColor
-        roughness  : 1.0,
-        metalness  : 0.0,
+        roughness: 1.0,
+        metalness: 0.0,
         transparent: true,
-        opacity    : 0.0,        // transparencia base
-        depthWrite : false,
-        blending   : THREE.AdditiveBlending,
+        opacity: 0.0,        // transparencia base
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
       });
       const bokehInstanced = new THREE.InstancedMesh(bokehGeo, bokehMat, CONFIG.BOKEH_COUNT);
       scene.add(bokehInstanced);
 
       // Colores y posiciones de bokeh
       const bokehColors = new Float32Array(CONFIG.BOKEH_COUNT * 3);
-      const bokehData   = []; // {scale, phase, speed, baseY, baseX}
+      const bokehData = []; // {scale, phase, speed, baseY, baseX}
 
       for (let i = 0; i < CONFIG.BOKEH_COUNT; i++) {
         const brightness = 0.04 + Math.random() * 0.18;
         const warm = Math.random() > 0.5;
-        bokehColors[i*3]   = brightness * (warm ? 1.0 : 0.88);
-        bokehColors[i*3+1] = brightness * (warm ? 0.95 : 0.90);
-        bokehColors[i*3+2] = brightness * (warm ? 0.90 : 1.0);
+        bokehColors[i * 3] = brightness * (warm ? 1.0 : 0.88);
+        bokehColors[i * 3 + 1] = brightness * (warm ? 0.95 : 0.90);
+        bokehColors[i * 3 + 2] = brightness * (warm ? 0.90 : 1.0);
 
         bokehData.push({
-          scale : CONFIG.BOKEH_SIZE_MIN + Math.random() * (CONFIG.BOKEH_SIZE_MAX - CONFIG.BOKEH_SIZE_MIN),
-          phase : Math.random() * Math.PI * 2,
-          speed : 0.0002 + Math.random() * 0.0004,
-          baseX : (Math.random() - 0.5) * 14,
-          baseY : (Math.random() - 0.5) * 6,
-          depth : CONFIG.BOKEH_DEPTH_MIN + Math.random() * (CONFIG.BOKEH_DEPTH_MAX - CONFIG.BOKEH_DEPTH_MIN),
+          scale: CONFIG.BOKEH_SIZE_MIN + Math.random() * (CONFIG.BOKEH_SIZE_MAX - CONFIG.BOKEH_SIZE_MIN),
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.0002 + Math.random() * 0.0004,
+          baseX: (Math.random() - 0.5) * 14,
+          baseY: (Math.random() - 0.5) * 6,
+          depth: CONFIG.BOKEH_DEPTH_MIN + Math.random() * (CONFIG.BOKEH_DEPTH_MAX - CONFIG.BOKEH_DEPTH_MIN),
         });
       }
       bokehInstanced.instanceColor = new THREE.InstancedBufferAttribute(bokehColors, 3);
@@ -2134,7 +2764,7 @@
           c.fillRect(0, 0, S, S);
 
           // Wash azul-acero desde la izquierda (luz fría de sala)
-          const wBlue = c.createRadialGradient(S*0.08, S*0.42, 0, S*0.08, S*0.42, S*0.82);
+          const wBlue = c.createRadialGradient(S * 0.08, S * 0.42, 0, S * 0.08, S * 0.42, S * 0.82);
           wBlue.addColorStop(0.0, 'rgba(55,105,225,0.32)');
           wBlue.addColorStop(0.45, 'rgba(38,75,185,0.14)');
           wBlue.addColorStop(1.0, 'rgba(15,40,130,0.00)');
@@ -2142,7 +2772,7 @@
           c.fillRect(0, 0, S, S);
 
           // Wash plata-fría desde la derecha (luz blanca lateral rebotando)
-          const wSilver = c.createRadialGradient(S*0.92, S*0.46, 0, S*0.92, S*0.46, S*0.70);
+          const wSilver = c.createRadialGradient(S * 0.92, S * 0.46, 0, S * 0.92, S * 0.46, S * 0.70);
           wSilver.addColorStop(0.0, 'rgba(180,190,220,0.22)');
           wSilver.addColorStop(0.45, 'rgba(140,155,190,0.09)');
           wSilver.addColorStop(1.0, 'rgba(90,100,140,0.00)');
@@ -2150,7 +2780,7 @@
           c.fillRect(0, 0, S, S);
 
           // Ámbar cálido desde abajo-centro (rebote del piso iluminado)
-          const wAmber = c.createRadialGradient(S*0.52, S*0.95, 0, S*0.52, S*0.95, S*0.58);
+          const wAmber = c.createRadialGradient(S * 0.52, S * 0.95, 0, S * 0.52, S * 0.95, S * 0.58);
           wAmber.addColorStop(0.0, 'rgba(215,155,45,0.20)');
           wAmber.addColorStop(0.5, 'rgba(170,110,28,0.07)');
           wAmber.addColorStop(1.0, 'rgba(100,65,10,0.00)');
@@ -2159,7 +2789,7 @@
 
           // Brillo cenital general — como si hubiera un foco blanco amplio desde arriba
           // que ilumina toda la sala y se refleja en los tiles con distintas intensidades
-          const wCeiling = c.createRadialGradient(S*0.55, S*0.0, 0, S*0.55, S*0.0, S*0.90);
+          const wCeiling = c.createRadialGradient(S * 0.55, S * 0.0, 0, S * 0.55, S * 0.0, S * 0.90);
           wCeiling.addColorStop(0.0, 'rgba(225,232,255,0.50)');
           wCeiling.addColorStop(0.4, 'rgba(175,188,220,0.22)');
           wCeiling.addColorStop(1.0, 'rgba(90,105,150,0.00)');
@@ -2172,36 +2802,36 @@
           // Así se ve una fuente de luz en un espejo real — no una mancha de color.
           const spots = [
             // Spotlight principal blanco (cenital, el más dominante)
-            { x:0.62, y:0.21, cr:0.026, hr:0.080, rgb:'255,255,255' },
-            { x:0.50, y:0.14, cr:0.016, hr:0.050, rgb:'245,250,255' },
-            { x:0.76, y:0.29, cr:0.014, hr:0.044, rgb:'255,255,255' },
-            { x:0.88, y:0.20, cr:0.011, hr:0.034, rgb:'255,255,255' },
-            { x:0.70, y:0.10, cr:0.010, hr:0.032, rgb:'248,252,255' },
-            { x:0.45, y:0.06, cr:0.009, hr:0.028, rgb:'255,255,255' },
-            { x:0.35, y:0.18, cr:0.009, hr:0.028, rgb:'235,242,255' },
-            { x:0.82, y:0.12, cr:0.008, hr:0.025, rgb:'255,255,255' },
+            { x: 0.62, y: 0.21, cr: 0.026, hr: 0.080, rgb: '255,255,255' },
+            { x: 0.50, y: 0.14, cr: 0.016, hr: 0.050, rgb: '245,250,255' },
+            { x: 0.76, y: 0.29, cr: 0.014, hr: 0.044, rgb: '255,255,255' },
+            { x: 0.88, y: 0.20, cr: 0.011, hr: 0.034, rgb: '255,255,255' },
+            { x: 0.70, y: 0.10, cr: 0.010, hr: 0.032, rgb: '248,252,255' },
+            { x: 0.45, y: 0.06, cr: 0.009, hr: 0.028, rgb: '255,255,255' },
+            { x: 0.35, y: 0.18, cr: 0.009, hr: 0.028, rgb: '235,242,255' },
+            { x: 0.82, y: 0.12, cr: 0.008, hr: 0.025, rgb: '255,255,255' },
             // Luz azul-acero (fría, lateral)
-            { x:0.24, y:0.20, cr:0.020, hr:0.062, rgb:'120,175,255' },
-            { x:0.14, y:0.38, cr:0.013, hr:0.040, rgb:'110,168,255' },
-            { x:0.08, y:0.58, cr:0.011, hr:0.034, rgb:'100,160,255' },
-            { x:0.20, y:0.72, cr:0.010, hr:0.030, rgb:'115,170,255' },
-            { x:0.32, y:0.84, cr:0.008, hr:0.025, rgb:'130,180,255' },
+            { x: 0.24, y: 0.20, cr: 0.020, hr: 0.062, rgb: '120,175,255' },
+            { x: 0.14, y: 0.38, cr: 0.013, hr: 0.040, rgb: '110,168,255' },
+            { x: 0.08, y: 0.58, cr: 0.011, hr: 0.034, rgb: '100,160,255' },
+            { x: 0.20, y: 0.72, cr: 0.010, hr: 0.030, rgb: '115,170,255' },
+            { x: 0.32, y: 0.84, cr: 0.008, hr: 0.025, rgb: '130,180,255' },
             // Luz blanca lateral derecha (reflejo de pared)
-            { x:0.90, y:0.42, cr:0.014, hr:0.044, rgb:'220,228,255' },
-            { x:0.86, y:0.60, cr:0.010, hr:0.032, rgb:'210,220,255' },
-            { x:0.78, y:0.75, cr:0.009, hr:0.028, rgb:'225,232,255' },
+            { x: 0.90, y: 0.42, cr: 0.014, hr: 0.044, rgb: '220,228,255' },
+            { x: 0.86, y: 0.60, cr: 0.010, hr: 0.032, rgb: '210,220,255' },
+            { x: 0.78, y: 0.75, cr: 0.009, hr: 0.028, rgb: '225,232,255' },
             // Luz ámbar/dorada (cálida, desde abajo)
-            { x:0.62, y:0.77, cr:0.015, hr:0.046, rgb:'255,205,90'  },
-            { x:0.50, y:0.86, cr:0.010, hr:0.032, rgb:'255,212,105' },
-            { x:0.38, y:0.78, cr:0.010, hr:0.030, rgb:'255,200,80'  },
-            { x:0.74, y:0.86, cr:0.008, hr:0.025, rgb:'255,210,100' },
+            { x: 0.62, y: 0.77, cr: 0.015, hr: 0.046, rgb: '255,205,90' },
+            { x: 0.50, y: 0.86, cr: 0.010, hr: 0.032, rgb: '255,212,105' },
+            { x: 0.38, y: 0.78, cr: 0.010, hr: 0.030, rgb: '255,200,80' },
+            { x: 0.74, y: 0.86, cr: 0.008, hr: 0.025, rgb: '255,210,100' },
             // Luz teal/cian (acento frío complementario)
-            { x:0.26, y:0.62, cr:0.012, hr:0.036, rgb:'80,235,195'  },
-            { x:0.16, y:0.76, cr:0.009, hr:0.028, rgb:'90,240,200'  },
+            { x: 0.26, y: 0.62, cr: 0.012, hr: 0.036, rgb: '80,235,195' },
+            { x: 0.16, y: 0.76, cr: 0.009, hr: 0.028, rgb: '90,240,200' },
             // Blancos adicionales dispersos
-            { x:0.42, y:0.34, cr:0.010, hr:0.032, rgb:'230,238,255' },
-            { x:0.58, y:0.90, cr:0.008, hr:0.025, rgb:'255,255,255' },
-            { x:0.92, y:0.54, cr:0.008, hr:0.024, rgb:'240,246,255' },
+            { x: 0.42, y: 0.34, cr: 0.010, hr: 0.032, rgb: '230,238,255' },
+            { x: 0.58, y: 0.90, cr: 0.008, hr: 0.025, rgb: '255,255,255' },
+            { x: 0.92, y: 0.54, cr: 0.008, hr: 0.024, rgb: '240,246,255' },
           ];
 
           for (const s of spots) {
@@ -2245,20 +2875,20 @@
         const rng = (a, b) => a + Math.random() * (b - a);
         for (let i = 0; i < BALL_COUNT; i++) {
           ballDefs.push({
-            r:        rng(IS_MOBILE ? 0.13 : 0.16, IS_MOBILE ? 0.44 : 0.58),
-            x:        rng(-2.8, 2.8),
-            z:        rng(-0.5, 1.2),
-            yStart:   rng(2.0, 5.5),   // y de aparición (fuera de pantalla arriba)
-            speed:    rng(0.004, 0.016),
+            r: rng(IS_MOBILE ? 0.13 : 0.16, IS_MOBILE ? 0.44 : 0.58),
+            x: rng(-2.8, 2.8),
+            z: rng(-0.5, 1.2),
+            yStart: rng(2.0, 5.5),   // y de aparición (fuera de pantalla arriba)
+            speed: rng(0.004, 0.016),
             rotSpeed: rng(0.008, 0.028),
-            rotAxis:  new THREE.Vector3(rng(-0.3,0.3), 1, rng(-0.2,0.2)).normalize(),
+            rotAxis: new THREE.Vector3(rng(-0.3, 0.3), 1, rng(-0.2, 0.2)).normalize(),
           });
         }
 
         for (const def of ballDefs) {
           const geo = new THREE.SphereGeometry(def.r, DISCO_SEG_W, DISCO_SEG_H);
           const mat = new THREE.MeshMatcapMaterial({
-            matcap:      discoMatcapTex || undefined,
+            matcap: discoMatcapTex || undefined,
             flatShading: true,
           });
           const mesh = new THREE.Mesh(geo, mat);
@@ -2297,8 +2927,8 @@
         // Shader de flare: estrella con rays y halo
         const flareMat = new THREE.ShaderMaterial({
           uniforms: {
-            uTime   : { value: 0 },
-            uColor  : { value: new THREE.Color(0xffffff) },
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color(0xffffff) },
             uOpacity: { value: 1.0 },
           },
           vertexShader: /* glsl */`
@@ -2350,15 +2980,15 @@
               gl_FragColor = vec4(col, brightness * 0.85);
             }
           `,
-          transparent : true,
-          depthWrite  : false,
-          blending    : THREE.AdditiveBlending,
-          side        : THREE.DoubleSide,
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          side: THREE.DoubleSide,
         });
 
         for (let i = 0; i < CONFIG.FLARE_COUNT; i++) {
-          const flareGeo  = new THREE.PlaneGeometry(1.8, 1.8);
-          const mat       = flareMat.clone();
+          const flareGeo = new THREE.PlaneGeometry(1.8, 1.8);
+          const mat = flareMat.clone();
           mat.uniforms.uColor.value = new THREE.Color(CONFIG.LIGHT_COLORS[i % CONFIG.LIGHT_COLORS.length]);
           const flareMesh = new THREE.Mesh(flareGeo, mat);
           flareMesh.userData.phase = (i / CONFIG.FLARE_COUNT) * Math.PI * 2;
@@ -2384,11 +3014,11 @@
       // Shader combinado: Film Grain + Viñeta + Aberracion cromatica sutil
       const finalPass = new ShaderPass({
         uniforms: {
-          tDiffuse    : { value: null },
-          uTime       : { value: 0.0 },
+          tDiffuse: { value: null },
+          uTime: { value: 0.0 },
           uGrainAmount: { value: CONFIG.FILM_GRAIN_INTENSITY },
-          uVignette   : { value: CONFIG.VIGNETTE_DARKNESS },
-          uAberration : { value: IS_MOBILE ? 0.0005 : 0.002 },
+          uVignette: { value: CONFIG.VIGNETTE_DARKNESS },
+          uAberration: { value: IS_MOBILE ? 0.0005 : 0.002 },
         },
         vertexShader: /* glsl */`
           varying vec2 vUv;
@@ -2464,7 +3094,7 @@
       if (!REDUCED_MOTION) {
         // Desktop: seguimiento del raton
         window.addEventListener('mousemove', (e) => {
-          mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
+          mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
           mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
         }, { passive: true });
 
@@ -2472,7 +3102,7 @@
         if (IS_MOBILE && window.DeviceOrientationEvent) {
           window.addEventListener('deviceorientation', (e) => {
             if (e.gamma !== null) mouseX = Math.max(-1, Math.min(1, e.gamma / 30));
-            if (e.beta  !== null) mouseY = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+            if (e.beta !== null) mouseY = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
           }, { passive: true });
         }
       }
@@ -2485,7 +3115,7 @@
 
       function animate() {
         requestAnimationFrame(animate);
-        const delta   = Math.min(clock.getDelta(), 0.05);
+        const delta = Math.min(clock.getDelta(), 0.05);
         const elapsed = clock.getElapsedTime();
         frameCount++;
 
@@ -2514,7 +3144,7 @@
         const dummyB = new THREE.Object3D();
         for (let i = 0; i < CONFIG.BOKEH_COUNT; i++) {
           const bd = bokehData[i];
-          const t  = elapsed * bd.speed + bd.phase;
+          const t = elapsed * bd.speed + bd.phase;
           dummyB.position.set(
             bd.baseX + Math.sin(t * 0.7) * 0.8,
             bd.baseY + Math.sin(t * 1.1) * 0.5,
@@ -2546,7 +3176,7 @@
 
         for (let i = 0; i < discoSpots.length; i++) {
           const sp = discoSpots[i];
-          const t  = elapsed * sp.userData.speed + sp.userData.phase;
+          const t = elapsed * sp.userData.speed + sp.userData.phase;
           sp.position.set(Math.cos(t) * 3.0, 2.5 + Math.sin(t * 0.7) * 0.6, Math.sin(t) * 2.0);
           sp.target.position.set(0, 0, 0);
           sp.target.updateMatrixWorld();
@@ -2560,31 +3190,31 @@
           const ix = i * 3;
 
           // Fisica: aplicar velocidad
-          pPos[ix]   += pVel[ix];
-          pPos[ix+1] += pVel[ix+1];
-          pPos[ix+2] += pVel[ix+2];
+          pPos[ix] += pVel[ix];
+          pPos[ix + 1] += pVel[ix + 1];
+          pPos[ix + 2] += pVel[ix + 2];
 
           // Derive horizontal suave (turbulencia de aire)
-          pVel[ix]   += (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 0.1;
-          pVel[ix+2] += (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 0.05;
+          pVel[ix] += (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 0.1;
+          pVel[ix + 2] += (Math.random() - 0.5) * CONFIG.DRIFT_SPEED * 0.05;
 
           // Amortiguacion de deriva para no diverger
-          pVel[ix]   *= 0.995;
-          pVel[ix+2] *= 0.997;
+          pVel[ix] *= 0.995;
+          pVel[ix + 2] *= 0.997;
 
           // Rotacion en 3 ejes
-          pRot[ix]   += pRotV[ix];
-          pRot[ix+1] += pRotV[ix+1];
-          pRot[ix+2] += pRotV[ix+2];
+          pRot[ix] += pRotV[ix];
+          pRot[ix + 1] += pRotV[ix + 1];
+          pRot[ix + 2] += pRotV[ix + 2];
 
           // Respawn si cae por debajo del piso
-          if (pPos[ix+1] < -2.5) {
+          if (pPos[ix + 1] < -2.5) {
             spawnParticle(i, true);
           }
 
           // Construir matriz de instancia
-          dummy.position.set(pPos[ix], pPos[ix+1], pPos[ix+2]);
-          dummy.rotation.set(pRot[ix], pRot[ix+1], pRot[ix+2]);
+          dummy.position.set(pPos[ix], pPos[ix + 1], pPos[ix + 2]);
+          dummy.rotation.set(pRot[ix], pRot[ix + 1], pRot[ix + 2]);
           dummy.scale.setScalar(pScale[i]);
           dummy.updateMatrix();
           glitterMesh.setMatrixAt(i, dummy.matrix);
@@ -2593,12 +3223,12 @@
 
         /* --- Update lens flares --- */
         for (let i = 0; i < flares.length; i++) {
-          const f    = flares[i];
+          const f = flares[i];
           const lRef = dynamicLights[i % dynamicLights.length];
           // Flare sigue a su luz
           f.position.copy(lRef.position);
           f.lookAt(camera.position);
-          f.material.uniforms.uTime.value    = elapsed;
+          f.material.uniforms.uTime.value = elapsed;
           f.material.uniforms.uOpacity.value = 0.4 + 0.3 * Math.sin(elapsed * 1.5 + i);
           const fs = 0.6 + 0.4 * Math.sin(elapsed * 0.8 + i * 2.1);
           f.scale.setScalar(fs);
@@ -2620,10 +3250,10 @@
       if (REDUCED_MOTION) {
         // Reducir velocidades a la mitad, no eliminar para mantener algo de vida
         for (let i = 0; i < PARTICLE_COUNT; i++) {
-          pVel[i*3+1] *= 0.3;
-          pRotV[i*3]  *= 0.2;
-          pRotV[i*3+1]*= 0.2;
-          pRotV[i*3+2]*= 0.2;
+          pVel[i * 3 + 1] *= 0.3;
+          pRotV[i * 3] *= 0.2;
+          pRotV[i * 3 + 1] *= 0.2;
+          pRotV[i * 3 + 2] *= 0.2;
         }
         CONFIG.LIGHT_SPEED *= 0.2;
       }
@@ -2631,4 +3261,5 @@
 
   </script>
 </body>
+
 </html>
